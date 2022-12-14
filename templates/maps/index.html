@@ -1,0 +1,57 @@
+{% extends 'maps/template.html' %}
+
+{% block body %}
+    <div id="player2" class="player"> HELLO </div>
+    <form action="">
+    {% csrf_token %}
+    <button type="button" id="submit-1" class="btn btn-primary">Save Screenshot</button>
+    </form>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
+  crossorigin="anonymous"></script>
+	<script src="https://api-maps.yandex.ru/2.1/?apikey=fe94c607-ccc3-4d84-a017-3082f44c2512&lang=ru_RU">
+	</script>
+	<script>
+    const center = [55.789335184475455,49.1243166584617];
+
+        ymaps.ready(function () {
+        if (!ymaps.panorama.isSupported()) {
+            return;
+        }
+
+        ymaps.panorama.createPlayer(
+       'player2', center
+        ).done(function (player) {
+                var panorama = player.getPanorama();
+                console.log(panorama)
+            });
+        })
+
+    $(function() {
+    $("#submit-1").click(function() {
+        console.log('Hello from this!')
+
+    var $crf_token = $('[name="csrfmiddlewaretoken"]').attr('value');
+
+          $.ajax({
+                url: "test",
+                type: "POST",
+                timeout: 0,
+                processData: false,
+                mimeType: "multipart/form-data",
+                contentType: false,
+              headers:{"X-CSRFToken": $crf_token},
+                dataType:"json",
+                success: function (data) {
+                       alert("Screenshot saved successfully!");
+                },
+                error: function (e) {
+                    console.log(e);
+                }
+                }).done(function(o) {
+
+               });
+        });
+    });
+    </script>
+{% endblock body %}
