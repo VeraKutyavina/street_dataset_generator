@@ -1,0 +1,34 @@
+{
+  "build": "11_3_0_hd922786_26",
+  "build_number": 26,
+  "channel": "https://conda.anaconda.org/conda-forge/osx-arm64",
+  "constrains": [],
+  "depends": [
+    "libgfortran5"
+  ],
+  "extracted_package_dir": "/Users/vera/miniforge3/pkgs/libgfortran-5.0.0-11_3_0_hd922786_26",
+  "features": "",
+  "files": [],
+  "fn": "libgfortran-5.0.0-11_3_0_hd922786_26.tar.bz2",
+  "license": "GPL-3.0-only WITH GCC-exception-3.1",
+  "license_family": "GPL",
+  "link": {
+    "source": "/Users/vera/miniforge3/pkgs/libgfortran-5.0.0-11_3_0_hd922786_26",
+    "type": 1
+  },
+  "md5": "637cb10c3ffec46e0dd307177da1ab6b",
+  "name": "libgfortran",
+  "package_tarball_full_path": "/Users/vera/miniforge3/pkgs/libgfortran-5.0.0-11_3_0_hd922786_26.tar.bz2",
+  "paths_data": {
+    "paths": [],
+    "paths_version": 1
+  },
+  "requested_spec": "None",
+  "sha256": "3ec919da4f3e87dda907eeed15a06b253882a432cc1b97021cb0cf453bc0d973",
+  "size": 152151,
+  "subdir": "osx-arm64",
+  "timestamp": 1667863350289,
+  "track_features": "",
+  "url": "https://conda.anaconda.org/conda-forge/osx-arm64/libgfortran-5.0.0-11_3_0_hd922786_26.tar.bz2",
+  "version": "5.0.0"
+}

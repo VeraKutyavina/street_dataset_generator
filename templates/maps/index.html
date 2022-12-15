@@ -6,6 +6,18 @@
     {% csrf_token %}
     <button type="button" id="submit-1" class="btn btn-primary">Save Screenshot</button>
     </form>
+    <form action="">
+    {% csrf_token %}
+    <button type="button" id="submit-2" class="btn btn-primary">Save Frames</button>
+    </form>
+    <form action="">
+    {% csrf_token %}
+    <button type="button" id="submit-3" class="btn btn-primary">Save Frames</button>
+    </form>
+     <form action="">
+    {% csrf_token %}
+    <button type="button" id="submit-3" class="btn btn-primary">Save Frames</button>
+    </form>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
   crossorigin="anonymous"></script>
@@ -29,8 +41,6 @@
 
     $(function() {
     $("#submit-1").click(function() {
-        console.log('Hello from this!')
-
     var $crf_token = $('[name="csrfmiddlewaretoken"]').attr('value');
 
           $.ajax({
@@ -42,9 +52,48 @@
                 contentType: false,
               headers:{"X-CSRFToken": $crf_token},
                 dataType:"json",
-                success: function (data) {
-                       alert("Screenshot saved successfully!");
-                },
+                error: function (e) {
+                    console.log(e);
+                }
+                }).done(function(o) {
+
+               });
+        });
+    });
+
+
+        $(function() {
+    $("#submit-2").click(function() {
+    var $crf_token = $('[name="csrfmiddlewaretoken"]').attr('value');
+          $.ajax({
+                url: "create_frames",
+                type: "POST",
+                timeout: 0,
+                processData: false,
+                mimeType: "multipart/form-data",
+                contentType: false,
+              headers:{"X-CSRFToken": $crf_token},
+                dataType:"json",
+                error: function (e) {
+                    console.log(e);
+                }
+                }).done(function(o) {
+
+               });
+        });
+    });
+        $(function() {
+    $("#submit-3").click(function() {
+    var $crf_token = $('[name="csrfmiddlewaretoken"]').attr('value');
+          $.ajax({
+                url: "webp_mp4",
+                type: "POST",
+                timeout: 0,
+                processData: false,
+                mimeType: "multipart/form-data",
+                contentType: false,
+              headers:{"X-CSRFToken": $crf_token},
+                dataType:"json",
                 error: function (e) {
                     console.log(e);
                 }
