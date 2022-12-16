@@ -1,106 +1,70 @@
 {% extends 'maps/template.html' %}
 
 {% block body %}
-    <div id="player2" class="player"> HELLO </div>
-    <form action="">
-    {% csrf_token %}
-    <button type="button" id="submit-1" class="btn btn-primary">Save Screenshot</button>
-    </form>
-    <form action="">
-    {% csrf_token %}
-    <button type="button" id="submit-2" class="btn btn-primary">Save Frames</button>
-    </form>
-    <form action="">
-    {% csrf_token %}
-    <button type="button" id="submit-3" class="btn btn-primary">Save Frames</button>
-    </form>
-     <form action="">
-    {% csrf_token %}
-    <button type="button" id="submit-3" class="btn btn-primary">Save Frames</button>
-    </form>
+    <div id="player2" class="player">  </div>
+    <div class="buttons-wrapper">
+        <form action="">
+            {% csrf_token %}
+            <button type="button" id="record-video" class="btn btn-primary">Record Video</button>
+        </form>
+        <form action="">
+            {% csrf_token %}
+            <button type="button" id="convert-to-mp4" class="btn btn-primary">Convert to mp4</button>
+        </form>
+        <form action="">
+            {% csrf_token %}
+            <button type="button" id="save-video-frames" class="btn btn-primary">Save Frames</button>
+        </form>
+         <form action="">
+            {% csrf_token %}
+            <button type="button" id="get-result" class="btn btn-primary">Get cars count</button>
+        </form>
+    </div>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
-  crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
 	<script src="https://api-maps.yandex.ru/2.1/?apikey=fe94c607-ccc3-4d84-a017-3082f44c2512&lang=ru_RU">
 	</script>
+        {% load static %}
 	<script>
-    const center = [55.789335184475455,49.1243166584617];
-
+        const center = [55.789335184475455,49.1243166584617];
         ymaps.ready(function () {
-        if (!ymaps.panorama.isSupported()) {
-            return;
+            if (!ymaps.panorama.isSupported()) {
+                return;
         }
 
-        ymaps.panorama.createPlayer(
-       'player2', center
-        ).done(function (player) {
-                var panorama = player.getPanorama();
-                console.log(panorama)
-            });
-        })
+        ymaps.panorama.createPlayer('player2', center)})
+        var $crf_token = $('[name="csrfmiddlewaretoken"]').attr('value');
 
-    $(function() {
-    $("#submit-1").click(function() {
-    var $crf_token = $('[name="csrfmiddlewaretoken"]').attr('value');
-
-          $.ajax({
-                url: "test",
+        const sendAjaxQuery = (url) => {
+            $.ajax({
+                url: url,
                 type: "POST",
                 timeout: 0,
                 processData: false,
                 mimeType: "multipart/form-data",
                 contentType: false,
-              headers:{"X-CSRFToken": $crf_token},
+                headers:{"X-CSRFToken": $crf_token},
                 dataType:"json",
                 error: function (e) {
                     console.log(e);
                 }
-                }).done(function(o) {
+            })
+        }
 
-               });
+        $("#record-video").click(function() {
+            sendAjaxQuery("test")
         });
-    });
 
-
-        $(function() {
-    $("#submit-2").click(function() {
-    var $crf_token = $('[name="csrfmiddlewaretoken"]').attr('value');
-          $.ajax({
-                url: "create_frames",
-                type: "POST",
-                timeout: 0,
-                processData: false,
-                mimeType: "multipart/form-data",
-                contentType: false,
-              headers:{"X-CSRFToken": $crf_token},
-                dataType:"json",
-                error: function (e) {
-                    console.log(e);
-                }
-                }).done(function(o) {
-
-               });
+        $("#save-video-frames").click(function() {
+            sendAjaxQuery("create_frames")
         });
-    });
-        $(function() {
-    $("#submit-3").click(function() {
-    var $crf_token = $('[name="csrfmiddlewaretoken"]').attr('value');
-          $.ajax({
-                url: "webp_mp4",
-                type: "POST",
-                timeout: 0,
-                processData: false,
-                mimeType: "multipart/form-data",
-                contentType: false,
-              headers:{"X-CSRFToken": $crf_token},
-                dataType:"json",
-                error: function (e) {
-                    console.log(e);
-                }
-                }).done(function(o) {
 
-               });
+        $("#convert-to-mp4").click(function() {
+            sendAjaxQuery("webp_mp4")
         });
-    });
+
+        $("#submit-4").click(function() {
+            sendAjaxQuery("get-result")
+        });
     </script>
 {% endblock body %}
