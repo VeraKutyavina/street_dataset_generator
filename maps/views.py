@@ -4,12 +4,14 @@ from rest_framework.permissions import AllowAny
 
 from maps.serializer import ScreenshotCreateSerializer
 from playwright.sync_api import sync_playwright
+from vehicle_detector import VehicleDetector
 
 from datetime import timedelta
 import cv2
 import numpy as np
 import subprocess
 import os
+import glob
 os.environ["IMAGEIO_FFMPEG_EXE"] = "/usr/bin/ffmpeg"
 
 SAVING_FRAMES_PER_SECOND = 1
@@ -105,7 +107,21 @@ def webp_mp4(request):
 
 
 def counting(request):
+    vd = VehicleDetector()
+    images_folder = glob.glob("video-images-opencv/*.jpg")
+    vehicles_folder_count = 0
+
+    for img_path in images_folder:
+        print("Img path", img_path)
+        img = cv2.imread(img_path)
+        vehicle_boxes = vd.detect_vehicles(img)
+        vehicle_count = len(vehicle_boxes)
+        vehicles_folder_count += vehicle_count
+
+    print("Total current count", vehicles_folder_count)
+
     return render(request, 'maps/index.html', {})
+
 
 class SaveScreenshot(CreateAPIView):
     serializer_class = ScreenshotCreateSerializer
