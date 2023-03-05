@@ -15,7 +15,6 @@ os.environ["IMAGEIO_FFMPEG_EXE"] = "/usr/bin/ffmpeg"
 
 SAVING_FRAMES_PER_SECOND = 1
 
-
 def index(request):
     context = {}
     return render(request, 'maps/index.html', context)
