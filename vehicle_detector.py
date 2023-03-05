@@ -1,5 +1,5 @@
 import cv2
-import numpy as np
+
 
 class VehicleDetector:
 
@@ -9,10 +9,7 @@ class VehicleDetector:
         self.model = cv2.dnn_DetectionModel(net)
         self.model.setInputParams(size=(832, 832), scale=1 / 255)
 
-
-        # Allow classes containing Vehicles only
         self.classes_allowed = [2, 3, 5, 6, 7]
-
 
     def detect_vehicles(self, img):
         # Detect Objects

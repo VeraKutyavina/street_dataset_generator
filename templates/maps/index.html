@@ -2,24 +2,19 @@
 
 {% block body %}
     <div id="player2" class="player">  </div>
-    <div class="buttons-wrapper">
+    <div id="buttons" class="buttons-wrapper">
         <form action="">
             {% csrf_token %}
             <button type="button" id="record-video" class="btn btn-primary">Record Video</button>
         </form>
-        <form action="">
-            {% csrf_token %}
-            <button type="button" id="convert-to-mp4" class="btn btn-primary">Convert to mp4</button>
-        </form>
-        <form action="">
-            {% csrf_token %}
-            <button type="button" id="save-video-frames" class="btn btn-primary">Save Frames</button>
-        </form>
+        <div id="data-loader" class="lds-ring"><div></div><div></div><div></div><div></div></div>
          <form action="">
             {% csrf_token %}
             <button type="button" id="get-result" class="btn btn-primary">Get cars count</button>
         </form>
+        <div id="counting-loader" class="lds-ring"><div></div><div></div><div></div><div></div></div>
     </div>
+    <div id="success-upload" class="result">Video uploaded successfully!</div>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
 	<script src="https://api-maps.yandex.ru/2.1/?apikey=fe94c607-ccc3-4d84-a017-3082f44c2512&lang=ru_RU">
@@ -35,7 +30,9 @@
         ymaps.panorama.createPlayer('player2', center)})
         var $crf_token = $('[name="csrfmiddlewaretoken"]').attr('value');
 
-        const sendAjaxQuery = (url) => {
+        const sendAjaxQuery = (url, loader, button, text, hide) => {
+            $(loader).show();
+            $(button).hide();
             $.ajax({
                 url: url,
                 type: "POST",
@@ -47,24 +44,29 @@
                 dataType:"json",
                 error: function (e) {
                     console.log(e);
+                },
+                complete: function(data){
+                    $(loader).hide();
+                    $(button).show();
+                    $(text).show();
+                    $(hide).hide();
+                },
+                success: function(resp){
+                    console.log(resp.count)
+                    if (!text) {
+                       $('#buttons').after("<div class=\"result-success\"> Result: " + resp.count + "</div>")
+                    }
+                    alert ("resp: "+resp.name);
                 }
             })
         }
 
-        $("#record-video").click(function() {
-            sendAjaxQuery("test")
+        $("#record-video").click(() => {
+            sendAjaxQuery("create_video", '#data-loader', "#record-video", "#success-upload")
         });
 
-        $("#save-video-frames").click(function() {
-            sendAjaxQuery("create_frames")
-        });
-
-        $("#convert-to-mp4").click(function() {
-            sendAjaxQuery("webp_mp4")
-        });
-
-        $("#submit-4").click(function() {
-            sendAjaxQuery("get-result")
+        $("#get-result").click(() => {
+            sendAjaxQuery("counting", "#counting-loader", "#get-result", undefined, "#success-upload")
         });
     </script>
 {% endblock body %}

@@ -1,8 +1,7 @@
-from django.shortcuts import render
-from rest_framework.generics import CreateAPIView
-from rest_framework.permissions import AllowAny
+import json
 
-from maps.serializer import ScreenshotCreateSerializer
+from django.http import HttpResponse
+from django.shortcuts import render
 from playwright.sync_api import sync_playwright
 from vehicle_detector import VehicleDetector
 
@@ -15,6 +14,39 @@ import glob
 os.environ["IMAGEIO_FFMPEG_EXE"] = "/usr/bin/ffmpeg"
 
 SAVING_FRAMES_PER_SECOND = 1
+
+
+def index(request):
+    context = {}
+    return render(request, 'maps/index.html', context)
+
+
+def convert_webm_mp4_subprocess():
+    list_of_files = glob.glob('videos/*')
+    input_file = max(list_of_files, key=os.path.getctime)
+    output_file = 'videos/data-record.mp4'
+    command = 'ffmpeg -i ' + input_file + ' ' + output_file
+    subprocess.run(command, shell=True)
+
+
+# create video with maps
+def create_video(request):
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        context = browser.new_context(record_video_dir="videos/")
+        page = context.new_page()
+        page.goto('http://127.0.0.1:8000/maps/')
+        page.wait_for_timeout(2000)
+
+        for i in range(25):
+            print(i)
+            page.locator('canvas').click(position={'x': 614, 'y': 478}, timeout=15000)
+            page.wait_for_timeout(500)
+        print(page.title())
+        browser.close()
+        context.close()
+        convert_webm_mp4_subprocess()
+    return render(request, 'maps/index.html', {})
 
 
 def format_timedelta(td):
@@ -38,33 +70,8 @@ def get_saving_frames_durations(cap, saving_fps):
     return s
 
 
-def index(request):
-    context = {}
-    return render(request, 'maps/index.html', context)
-
-
-# create video with maps
-def test(request):
-    print('wehdbjwhebd')
-    with sync_playwright() as p:
-        browser = p.chromium.launch()
-        context = browser.new_context(record_video_dir="videos/")
-        page = context.new_page()
-        page.goto('http://127.0.0.1:8000/maps/')
-        page.wait_for_timeout(5000)
-
-        for i in range(50):
-            print("рас ", i)
-            page.locator('canvas').click(position={'x': 614, 'y': 478}, timeout=15000)
-            page.wait_for_timeout(1000)
-        page.locator('wedhbjhwebdjhbwejdhbjhwbe').click()
-        print(page.title())
-        browser.close()
-        context.close()
-    return render(request, 'maps/index.html', {})
-
-def create_frames(request):
-    video_file = 'videos/test.mp4'
+def create_frames():
+    video_file = 'videos/data-record.mp4'
     filename = 'video-images'
     filename += "-opencv"
     if not os.path.isdir(filename):
@@ -91,14 +98,6 @@ def create_frames(request):
             except IndexError:
                 pass
         count += 1
-    return render(request, 'maps/index.html', {})
-
-
-def convert_webm_mp4_subprocess():
-    input_file = 'videos/822f744fb2a54023b072d18f42684d26.webm'
-    output_file = 'videos/test.mp4'
-    command = 'ffmpeg -i ' + input_file + ' ' + output_file
-    subprocess.run(command, shell=True)
 
 
 def webp_mp4(request):
@@ -107,6 +106,7 @@ def webp_mp4(request):
 
 
 def counting(request):
+    create_frames()
     vd = VehicleDetector()
     images_folder = glob.glob("video-images-opencv/*.jpg")
     vehicles_folder_count = 0
@@ -118,11 +118,8 @@ def counting(request):
         vehicle_count = len(vehicle_boxes)
         vehicles_folder_count += vehicle_count
 
-    print("Total current count", vehicles_folder_count)
+    dict = {'count': vehicles_folder_count}
 
-    return render(request, 'maps/index.html', {})
+    print("Total count", vehicles_folder_count)
 
-
-class SaveScreenshot(CreateAPIView):
-    serializer_class = ScreenshotCreateSerializer
-    permission_classes = [AllowAny]
+    return HttpResponse(json.dumps(dict), content_type='application/json')

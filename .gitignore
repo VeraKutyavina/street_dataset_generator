@@ -54,6 +54,7 @@ docs/_build/
 videos
 
 db.sqlite3
-822f744fb2a54023b072d18f42684d26.webm-opencv
 img
 video-images-opencv
+dnn_model
+.DS_Store
