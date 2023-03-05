@@ -2,36 +2,29 @@ import json
 
 from django.http import HttpResponse
 from django.shortcuts import render
-from playwright.sync_api import sync_playwright
-from vehicle_detector import VehicleDetector
-import osmnx as ox
+
+from maps.services.OSMService import osm_query
+from maps.classes.vehicle_detector import VehicleDetector
+from maps.services.VideoServices import create_map_video
 
 import pandas as pd
 from datetime import timedelta
 import cv2
 import numpy as np
-import subprocess
 import os
 import glob
-os.environ["IMAGEIO_FFMPEG_EXE"] = "/usr/bin/ffmpeg"
+
+
+# os.environ["IMAGEIO_FFMPEG_EXE"] = "/usr/bin/ffmpeg"
 
 SAVING_FRAMES_PER_SECOND = 1
-
-
-def osm_query(tag, city):
-    gdf = ox.geometries_from_place(city, tag).reset_index()
-    gdf['city'] = np.full(len(gdf), city.split(',')[0])
-    gdf['object'] = np.full(len(gdf), list(tag.keys())[0])
-    gdf['type'] = np.full(len(gdf), tag[list(tag.keys())[0]])
-    gdf = gdf[['city', 'object', 'type', 'geometry']]
-    print(gdf)
-    return gdf
 
 
 tags = [
         {'highway': 'bus_stop'}, {'footway': 'crossing'},
         {'amenity': 'cafe'},
        ]
+
 cities = ['Казань, Россия']
 
 
@@ -40,31 +33,8 @@ def index(request):
     return render(request, 'maps/index.html', context)
 
 
-def convert_webm_mp4_subprocess():
-    list_of_files = glob.glob('videos/*')
-    input_file = max(list_of_files, key=os.path.getctime)
-    output_file = 'videos/data-record.mp4'
-    command = 'ffmpeg -i ' + input_file + ' ' + output_file
-    subprocess.run(command, shell=True)
-
-
-# create video with maps
 def create_video(request):
-    with sync_playwright() as p:
-        browser = p.chromium.launch()
-        context = browser.new_context(record_video_dir="videos/")
-        page = context.new_page()
-        page.goto('http://127.0.0.1:8000/maps/')
-        page.wait_for_timeout(2000)
-
-        for i in range(25):
-            print(i)
-            page.locator('canvas').click(position={'x': 614, 'y': 478}, timeout=15000)
-            page.wait_for_timeout(500)
-        print(page.title())
-        browser.close()
-        context.close()
-        convert_webm_mp4_subprocess()
+    create_map_video()
     return render(request, 'maps/index.html', {})
 
 
@@ -117,11 +87,6 @@ def create_frames():
             except IndexError:
                 pass
         count += 1
-
-
-def webp_mp4(request):
-    convert_webm_mp4_subprocess()
-    return render(request, 'maps/index.html', {})
 
 
 def counting(request):
