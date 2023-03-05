@@ -13,6 +13,11 @@
             <button type="button" id="get-result" class="btn btn-primary">Get cars count</button>
         </form>
         <div id="counting-loader" class="lds-ring"><div></div><div></div><div></div><div></div></div>
+        <form action="">
+            {% csrf_token %}
+            <button type="button" id="get_osm_data" class="btn btn-primary">Get data</button>
+        </form>
+        <div id="osm-loader" class="lds-ring"><div></div><div></div><div></div><div></div></div>
     </div>
     <div id="success-upload" class="result">Video uploaded successfully!</div>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
@@ -67,6 +72,10 @@
 
         $("#get-result").click(() => {
             sendAjaxQuery("counting", "#counting-loader", "#get-result", undefined, "#success-upload")
+        });
+
+        $("#get_osm_data").click(() => {
+            sendAjaxQuery("get_osm_data", "#osm-loader", "#get_osm_data", undefined, "#success-upload")
         });
     </script>
 {% endblock body %}

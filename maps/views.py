@@ -4,7 +4,9 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from playwright.sync_api import sync_playwright
 from vehicle_detector import VehicleDetector
+import osmnx as ox
 
+import pandas as pd
 from datetime import timedelta
 import cv2
 import numpy as np
@@ -14,6 +16,24 @@ import glob
 os.environ["IMAGEIO_FFMPEG_EXE"] = "/usr/bin/ffmpeg"
 
 SAVING_FRAMES_PER_SECOND = 1
+
+
+def osm_query(tag, city):
+    gdf = ox.geometries_from_place(city, tag).reset_index()
+    gdf['city'] = np.full(len(gdf), city.split(',')[0])
+    gdf['object'] = np.full(len(gdf), list(tag.keys())[0])
+    gdf['type'] = np.full(len(gdf), tag[list(tag.keys())[0]])
+    gdf = gdf[['city', 'object', 'type', 'geometry']]
+    print(gdf)
+    return gdf
+
+
+tags = [
+        {'highway': 'bus_stop'}, {'footway': 'crossing'},
+        {'amenity': 'cafe'},
+       ]
+cities = ['Казань, Россия']
+
 
 def index(request):
     context = {}
@@ -122,3 +142,14 @@ def counting(request):
     print("Total count", vehicles_folder_count)
 
     return HttpResponse(json.dumps(dict), content_type='application/json')
+
+
+def get_osm_data(request):
+    gdfs = []
+    for city in cities:
+        for tag in tags:
+            f = osm_query(tag, city)
+            gdfs.append(f)
+
+    data_poi = pd.concat(gdfs)
+    print(data_poi.groupby(['city', 'object', 'type'], as_index=False).agg({'geometry': 'count'}))
