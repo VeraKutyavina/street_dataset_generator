@@ -25,15 +25,17 @@
 	<script src="https://api-maps.yandex.ru/2.1/?apikey=fe94c607-ccc3-4d84-a017-3082f44c2512&lang=ru_RU">
 	</script>
         {% load static %}
-	<script>
+    <script>
         const center = [55.789335184475455,49.1243166584617];
-        ymaps.ready(function () {
+        ymaps.ready(() => {
             if (!ymaps.panorama.isSupported()) {
                 return;
-        }
+            }
+            ymaps.panorama.createPlayer('player2', center)
+        })
 
-        ymaps.panorama.createPlayer('player2', center)})
-        var $crf_token = $('[name="csrfmiddlewaretoken"]').attr('value');
+        const $crf_token = $('[name="csrfmiddlewaretoken"]').attr('value');
+
 
         const sendAjaxQuery = (url, loader, button, text, hide) => {
             $(loader).show();
@@ -47,21 +49,16 @@
                 contentType: false,
                 headers:{"X-CSRFToken": $crf_token},
                 dataType:"json",
-                error: function (e) {
-                    console.log(e);
-                },
-                complete: function(data){
+                error: (e) => console.log(e),
+                complete: (data) => {
                     $(loader).hide();
                     $(button).show();
                     $(text).show();
                     $(hide).hide();
                 },
-                success: function(resp){
+                success: (resp) => {
                     console.log(resp.count)
-                    if (!text) {
-                       $('#buttons').after("<div class=\"result-success\"> Result: " + resp.count + "</div>")
-                    }
-                    alert ("resp: "+resp.name);
+                    if (!text) $('#buttons').after("<div class=\"result-success\"> Result: " + resp.count + "</div>")
                 }
             })
         }
@@ -78,4 +75,5 @@
             sendAjaxQuery("get_osm_data", "#osm-loader", "#get_osm_data", undefined, "#success-upload")
         });
     </script>
+
 {% endblock body %}
