@@ -31,8 +31,10 @@
             if (!ymaps.panorama.isSupported()) {
                 return;
             }
-            ymaps.panorama.createPlayer('player2', center)
-        })
+            ymaps.panorama.createPlayer('player2', center, {
+                hotkeysEnabled: true
+            });
+        });
 
         const $crf_token = $('[name="csrfmiddlewaretoken"]').attr('value');
 
@@ -50,7 +52,7 @@
                 headers:{"X-CSRFToken": $crf_token},
                 dataType:"json",
                 error: (e) => console.log(e),
-                complete: (data) => {
+                complete: () => {
                     $(loader).hide();
                     $(button).show();
                     $(text).show();

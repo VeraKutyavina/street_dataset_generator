@@ -3,7 +3,7 @@ import json
 from django.http import HttpResponse
 from django.shortcuts import render
 
-from maps.services.FramesService import create_frames
+# from maps.services.FramesService import create_frames
 from maps.services.MLService import counting_cars
 from maps.services.OSMService import osm_query
 from maps.services.VideoServices import create_map_video
@@ -32,7 +32,7 @@ def create_video_view(request):
 
 
 def counting_view(request):
-    create_frames()
+    # create_frames()
     total_count = counting_cars()
     dict = {'count': total_count}
     return HttpResponse(json.dumps(dict), content_type='application/json')
