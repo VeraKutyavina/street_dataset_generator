@@ -25,16 +25,17 @@ def record_video_with_playwright():
         page = context.new_page()
         page.goto(MAPS_URL)
         page.wait_for_timeout(1000)
-
         for i in range(30):
-            page.locator('canvas').click(position={'x': 605, 'y': 463}, timeout=15000)
-            page.wait_for_timeout(200)
+            page.keyboard.press('ArrowUp')
+            page.keyboard.press('ArrowUp')
+            page.screenshot(path='video-images-opencv/image' + str(i) + '.png')
+            page.wait_for_timeout(500)
         browser.close()
         context.close()
 
 
 def create_map_video():
     record_video_with_playwright()
-    convert_webm_to_mp4()
+    # convert_webm_to_mp4()
 
 
