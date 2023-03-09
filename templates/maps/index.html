@@ -19,6 +19,8 @@
         </form>
         <div id="osm-loader" class="lds-ring"><div></div><div></div><div></div><div></div></div>
     </div>
+    <div id="coordinate-x"></div>
+    <div id="coordinate-y"></div>
     <div id="success-upload" class="result">Video uploaded successfully!</div>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
@@ -26,6 +28,7 @@
 	</script>
         {% load static %}
     <script>
+        const $crf_token = $('[name="csrfmiddlewaretoken"]').attr('value');
         const center = [55.789335184475455,49.1243166584617];
         ymaps.ready(() => {
             if (!ymaps.panorama.isSupported()) {
@@ -33,11 +36,14 @@
             }
             ymaps.panorama.createPlayer('player2', center, {
                 hotkeysEnabled: true
+            }).then(player => {
+                player.events.add('panoramachange',() => {
+                    const [panorama_x, panorama_y] = player.getPanorama().getPosition();
+                    document.getElementById('coordinate-x').innerHTML = panorama_x;
+                    document.getElementById('coordinate-y').innerHTML = panorama_y;
+                });
             });
         });
-
-        const $crf_token = $('[name="csrfmiddlewaretoken"]').attr('value');
-
 
         const sendAjaxQuery = (url, loader, button, text, hide) => {
             $(loader).show();

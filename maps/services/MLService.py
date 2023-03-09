@@ -7,6 +7,7 @@ def counting_cars():
     vd = VehicleDetector()
     images_folder = glob.glob("video-images-opencv/*.png")
     vehicles_folder_count = 0
+    vehicles_folder_count = 0
 
     for img_path in images_folder:
         print("Img path", img_path)
