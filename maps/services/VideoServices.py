@@ -4,6 +4,8 @@ import glob
 
 from playwright.sync_api import sync_playwright
 
+from maps.services.DadataService import get_address_by_coord
+
 MAPS_URL = 'http://127.0.0.1:8000/maps/'
 VIDEO_RECORD_DIR = 'videos/'
 
@@ -28,6 +30,11 @@ def record_video_with_playwright():
         for i in range(30):
             page.keyboard.press('ArrowUp')
             page.keyboard.press('ArrowUp')
+
+            x = page.get_by_test_id('coordinate-x').all_inner_texts()[0]
+            y = page.get_by_test_id('coordinate-y').all_inner_texts()[0]
+
+            address = get_address_by_coord(x, y)
             page.screenshot(path='video-images-opencv/image' + str(i) + '.png')
             page.wait_for_timeout(500)
         browser.close()
