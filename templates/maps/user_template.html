@@ -28,7 +28,6 @@
         }
 
         .player {
-<<<<<<< HEAD
             width: 1200px;
             height: 80%;
         }
@@ -42,40 +41,40 @@
         }
 
         .lds-ring {
-          display: inline-block;
-          position: relative;
-          width: 58px;
-          height: 58px;
-          display: none
+            display: inline-block;
+            position: relative;
+            width: 58px;
+            height: 58px;
+            display: none
         }
         .lds-ring div {
-          box-sizing: border-box;
-          display: block;
-          position: absolute;
-          width: 48px;
-          height: 48px;
-          margin: 6px;
-          border: 6px solid #1e7ffd;
-          border-radius: 50%;
-          animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-          border-color: #1e7ffd transparent transparent transparent;
+            box-sizing: border-box;
+            display: block;
+            position: absolute;
+            width: 48px;
+            height: 48px;
+            margin: 6px;
+            border: 6px solid #1e7ffd;
+            border-radius: 50%;
+            animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+            border-color: #1e7ffd transparent transparent transparent;
         }
         .lds-ring div:nth-child(1) {
-          animation-delay: -0.45s;
+            animation-delay: -0.45s;
         }
         .lds-ring div:nth-child(2) {
-          animation-delay: -0.3s;
+            animation-delay: -0.3s;
         }
         .lds-ring div:nth-child(3) {
-          animation-delay: -0.15s;
+            animation-delay: -0.15s;
         }
         @keyframes lds-ring {
-          0% {
-            transform: rotate(0deg);
-          }
-          100% {
-            transform: rotate(360deg);
-          }
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
         }
         .result {
             margin: 1rem;
@@ -83,18 +82,25 @@
         }
         .result-success {
             margin: 1rem;
-=======
-            width: 1400px;
-            height: 90%;
->>>>>>> a3b6e85139c19e79bfdf5f1630b6913b59ddf64a
         }
         .addressForm {
             display: flex;
             flex-direction: column;
         }
+        .header {
+            padding: 0.5rem 1rem;
+        }
+
+        .pink-button {
+            background: #eb5369;
+            border: none;
+        }
     </style>
   </head>
   <body>
+    <nav class="navbar header navbar-expand-lg navbar-light bg-light">
+      <a class="navbar-brand" href="#">STREET INFORMATION</a>
+    </nav>
     {% block body %}
 
     {% endblock body %}
