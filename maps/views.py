@@ -33,7 +33,7 @@ def user_form_view(request):
 
 def create_video_view(request):
     create_map_video()
-    return render(request, 'maps/index.html', {})
+    return render(request, 'maps/user_form.html', {})
 
 
 def counting_view(request):

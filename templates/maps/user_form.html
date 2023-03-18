@@ -30,6 +30,8 @@
 	</script>
         {% load static %}
     <script>
+
+        const $crf_token = $('[name="csrfmiddlewaretoken"]').attr('value');
         const sendAjaxQuery = (url, loader, button, text, hide) => {
             $(loader).show();
             $(button).hide();
