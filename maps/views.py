@@ -29,7 +29,6 @@ def index_view(request):
 
 
 def user_form_view(request):
-    print('HELLO USER')
     template = loader.get_template('maps/user_form.html')
     context = {'form': CreateDatasetForm()}
     return HttpResponse(template.render(context, request))
