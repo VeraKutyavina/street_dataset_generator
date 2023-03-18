@@ -3,8 +3,13 @@
 {% block body %}
     <div id="player2" class="player">  </div>
     <div id="buttons" class="buttons-wrapper">
-        <form action="">
+        <form class="addressForm" action="">
             {% csrf_token %}
+            <label>
+                Address
+                <input id="address" name="address" />
+            </label>
+            <br />
             <button type="button" id="record-video" class="btn btn-primary">Record Video</button>
         </form>
         <div id="data-loader" class="lds-ring"><div></div><div></div><div></div><div></div></div>

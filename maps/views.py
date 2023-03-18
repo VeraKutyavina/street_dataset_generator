@@ -27,7 +27,7 @@ def index_view(request):
 
 
 def create_video_view(request):
-    create_map_video()
+    create_map_video("Пушкина")
     return render(request, 'maps/index.html', {})
 
 
@@ -47,3 +47,4 @@ def get_osm_data(request):
 
     data_poi = pd.concat(gdfs)
     print(data_poi.groupby(['city', 'object', 'type'], as_index=False).agg({'geometry': 'count'}))
+    return render(request, 'maps/index.html', {})
