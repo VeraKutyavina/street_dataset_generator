@@ -1,0 +1,75 @@
+{% extends 'maps/user_template.html' %}
+
+{% block body %}
+    <div id="buttons" class="buttons-wrapper">
+        <form class="addressForm" action="/maps/create_video" method="POST">
+            {% csrf_token %}
+            <label>
+                Address
+                <div>{{form.address}}</div>
+            </label>
+            <br />
+            <button type="submit" class="btn btn-primary pink-button">Record Video</button>
+{#            <button type="button" id="record-video" class="btn btn-primary pink-button">Record Video</button>#}
+        </form>
+        <div id="data-loader" class="lds-ring"><div></div><div></div><div></div><div></div></div>
+         <form action="">
+            {% csrf_token %}
+            <button type="button" id="get-result" class="btn btn-primary pink-button">Get cars count</button>
+        </form>
+        <div id="counting-loader" class="lds-ring"><div></div><div></div><div></div><div></div></div>
+        <form action="">
+            {% csrf_token %}
+            <button type="button" id="get_osm_data" class="btn btn-primary pink-button">Get data</button>
+        </form>
+        <div id="osm-loader" class="lds-ring"><div></div><div></div><div></div><div></div></div>
+    </div>
+    <div id="success-upload" class="result">Video uploaded successfully!</div>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
+	<script src="https://api-maps.yandex.ru/2.1/?apikey=fe94c607-ccc3-4d84-a017-3082f44c2512&lang=ru_RU">
+	</script>
+        {% load static %}
+    <script>
+
+        const $crf_token = $('[name="csrfmiddlewaretoken"]').attr('value');
+        const sendAjaxQuery = (url, loader, button, text, hide) => {
+            $(loader).show();
+            $(button).hide();
+            $.ajax({
+                url: url,
+                type: "POST",
+                timeout: 0,
+                processData: false,
+                mimeType: "multipart/form-data",
+                contentType: false,
+                headers:{"X-CSRFToken": $crf_token},
+                dataType:"json",
+                error: (e) => console.log(e),
+                complete: () => {
+                    $(loader).hide();
+                    $(button).show();
+                    $(text).show();
+                    $(hide).hide();
+                },
+                success: (resp) => {
+                    console.log(resp.count)
+                    if (!text) $('#buttons').after("<div class=\"result-success\"> Result: " + resp.count + "</div>")
+                }
+            })
+        }
+
+        $("#record-video").click(() => {
+            sendAjaxQuery("create_video", '#data-loader', "#record-video", "#success-upload")
+        });
+
+        $("#get-result").click(() => {
+            sendAjaxQuery("counting", "#counting-loader", "#get-result", undefined, "#success-upload")
+        });
+
+        $("#get_osm_data").click(() => {
+            sendAjaxQuery("get_osm_data", "#osm-loader", "#get_osm_data", undefined, "#success-upload")
+        });
+    </script>
+
+{% endblock body %}
