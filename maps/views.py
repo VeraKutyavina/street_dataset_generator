@@ -26,6 +26,11 @@ def index_view(request):
     return render(request, 'maps/index.html', context)
 
 
+def user_form_view(request):
+    context = {}
+    return render(request, 'maps/user_form.html', context)
+
+
 def create_video_view(request):
     create_map_video()
     return render(request, 'maps/index.html', {})
