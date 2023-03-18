@@ -2,7 +2,9 @@ import json
 
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.template import loader
 
+from maps.forms import CreateDatasetForm
 # from maps.services.FramesService import create_frames
 from maps.services.MLService import counting_cars
 from maps.services.OSMService import osm_query
@@ -27,13 +29,20 @@ def index_view(request):
 
 
 def user_form_view(request):
-    context = {}
-    return render(request, 'maps/user_form.html', context)
+    print('HELLO USER')
+    template = loader.get_template('maps/user_form.html')
+    context = {'form': CreateDatasetForm()}
+    return HttpResponse(template.render(context, request))
 
 
 def create_video_view(request):
+    address = request.POST['address']
+    print(address)
+
     create_map_video()
-    return render(request, 'maps/user_form.html', {})
+    template = loader.get_template('maps/user_form.html')
+    context = {'form': CreateDatasetForm()}
+    return HttpResponse(template.render(context, request))
 
 
 def counting_view(request):

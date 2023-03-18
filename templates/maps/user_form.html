@@ -2,14 +2,15 @@
 
 {% block body %}
     <div id="buttons" class="buttons-wrapper">
-        <form class="addressForm" action="">
+        <form class="addressForm" action="/maps/create_video" method="POST">
             {% csrf_token %}
             <label>
                 Address
-                <input id="address" name="address" />
+                <div>{{form.address}}</div>
             </label>
             <br />
-            <button type="button" id="record-video" class="btn btn-primary pink-button">Record Video</button>
+            <button type="submit" class="btn btn-primary pink-button">Record Video</button>
+{#            <button type="button" id="record-video" class="btn btn-primary pink-button">Record Video</button>#}
         </form>
         <div id="data-loader" class="lds-ring"><div></div><div></div><div></div><div></div></div>
          <form action="">
