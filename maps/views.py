@@ -38,7 +38,7 @@ def create_video_view(request):
     address = request.POST['address']
     print(address)
 
-    create_map_video()
+    create_map_video(address)
     template = loader.get_template('maps/user_form.html')
     context = {'form': CreateDatasetForm()}
     return HttpResponse(template.render(context, request))
@@ -60,3 +60,4 @@ def get_osm_data(request):
 
     data_poi = pd.concat(gdfs)
     print(data_poi.groupby(['city', 'object', 'type'], as_index=False).agg({'geometry': 'count'}))
+    return render(request, 'maps/index.html', {})

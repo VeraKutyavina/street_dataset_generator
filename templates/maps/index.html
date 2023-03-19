@@ -2,23 +2,36 @@
 
 {% block body %}
     <div id="player2" class="player">  </div>
+    <div id="coordinate-x" data-testid="coordinate-x"></div>
+    <div id="coordinate-y" data-testid="coordinate-y"></div>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
 	<script src="https://api-maps.yandex.ru/2.1/?apikey=fe94c607-ccc3-4d84-a017-3082f44c2512&lang=ru_RU">
 	</script>
         {% load static %}
     <script>
-        const center = [55.789335184475455,49.1243166584617];
+        const $crf_token = $('[name="csrfmiddlewaretoken"]').attr('value');
+
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        const x = urlParams.get('x')
+        const y = urlParams.get('y')
+
+        const center = [x, y];
         ymaps.ready(() => {
             if (!ymaps.panorama.isSupported()) {
                 return;
             }
             ymaps.panorama.createPlayer('player2', center, {
                 hotkeysEnabled: true
+            }).then(player => {
+                player.events.add('panoramachange',() => {
+                    const [panorama_x, panorama_y] = player.getPanorama().getPosition();
+                    document.getElementById('coordinate-x').innerHTML = panorama_x;
+                    document.getElementById('coordinate-y').innerHTML = panorama_y;
+                });
             });
         });
-
-        const $crf_token = $('[name="csrfmiddlewaretoken"]').attr('value');
     </script>
 
 {% endblock body %}
