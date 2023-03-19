@@ -11,7 +11,13 @@
         {% load static %}
     <script>
         const $crf_token = $('[name="csrfmiddlewaretoken"]').attr('value');
-        const center = [55.789335184475455,49.1243166584617];
+
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        const x = urlParams.get('x')
+        const y = urlParams.get('y')
+
+        const center = [x, y];
         ymaps.ready(() => {
             if (!ymaps.panorama.isSupported()) {
                 return;
