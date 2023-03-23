@@ -35,13 +35,16 @@ def user_form_view(request):
 
 
 def create_video_view(request):
-    address = request.POST['address']
-    print(address)
+    # address = request.POST['address']
+    # print(address)
 
-    create_map_video(address)
-    template = loader.get_template('maps/user_form.html')
-    context = {'form': CreateDatasetForm()}
-    return HttpResponse(template.render(context, request))
+    if request.method == 'POST':
+        address = request.POST['address']
+        print(address)
+        create_map_video(address)
+
+    dict = {}
+    return HttpResponse(json.dumps(dict), content_type='application/json')
 
 
 def counting_view(request):
