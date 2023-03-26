@@ -7,7 +7,7 @@ from playwright.sync_api import sync_playwright
 from maps.services.DadataService import get_address_by_coord
 from maps.services.YandexService import get_coord_by_address
 
-MAPS_URL = 'http://127.0.0.1:8000/maps'
+MAPS_URL = 'http://127.0.0.1:8000/maps/'
 VIDEO_RECORD_DIR = 'videos/'
 
 os.environ["IMAGEIO_FFMPEG_EXE"] = "/usr/bin/ffmpeg"
@@ -23,7 +23,7 @@ def convert_webm_to_mp4():
 
 def record_video_with_playwright(coordinates, address):
     i = 0
-    url = MAPS_URL + '?x=' + str(coordinates[0]) + '&y=' + str(coordinates[1])
+    url = MAPS_URL + '?x=' + str(coordinates[1]) + '&y=' + str(coordinates[0])
     with sync_playwright() as p:
         browser = p.chromium.launch()
         context = browser.new_context(record_video_dir=VIDEO_RECORD_DIR)
@@ -32,7 +32,6 @@ def record_video_with_playwright(coordinates, address):
         page.wait_for_timeout(1000)
         current_address = address
         while address in current_address:
-            print("HELLo")
             page.keyboard.press('ArrowUp')
             page.keyboard.press('ArrowUp')
 
@@ -75,7 +74,8 @@ def record_video_with_playwright(coordinates, address):
 
 def create_map_video(address):
     coordinates = get_coord_by_address(address)
-    record_video_with_playwright(coordinates, address)
+    street = get_address_by_coord(coordinates[1], coordinates[0])[0]['data']['street']
+    record_video_with_playwright(coordinates, street)
     # convert_webm_to_mp4()
 
 
