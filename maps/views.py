@@ -44,7 +44,7 @@ def create_video_view(request):
         address = request.POST['address']
         create_map_video(address)
 
-    total = (time.time() - start_time) * 1000
+    total = time.time() - start_time
 
     print('Total time: ' + str(total))
 

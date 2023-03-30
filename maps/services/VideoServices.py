@@ -33,13 +33,20 @@ def record_video_with_playwright(coordinates, address, heading):
         page.goto(url)
         page.wait_for_timeout(1000)
         current_address = [address]
-        while any(address in x for x in current_address):
-            page.keyboard.press('ArrowUp')
+        current_x = '1'
+        current_y = '1'
+        while any(address in addr for addr in current_address):
             page.keyboard.press('ArrowUp')
             page.keyboard.press('ArrowUp')
 
             x = page.get_by_test_id('coordinate-x').all_inner_texts()[0]
             y = page.get_by_test_id('coordinate-y').all_inner_texts()[0]
+
+            if x == current_x and y == current_y:
+                break
+            else:
+                current_x = x
+                current_y = y
 
             print("Current points: (" + str(x) + "," + str(y) + ")")
 
@@ -59,17 +66,23 @@ def record_video_with_playwright(coordinates, address, heading):
         page.goto(url)
         page.wait_for_timeout(1000)
         current_address = [address]
-        while any(address in x for x in current_address):
-            page.keyboard.press('ArrowDown')
+        print(address, "STREEt")
+        while any(address in addr for addr in current_address):
             page.keyboard.press('ArrowDown')
             page.keyboard.press('ArrowDown')
 
             x = page.get_by_test_id('coordinate-x').all_inner_texts()[0]
             y = page.get_by_test_id('coordinate-y').all_inner_texts()[0]
 
+            if x == current_x and y == current_y:
+                break
+            else:
+                current_x = x
+                current_y = y
+
+            print("Current points for second step: (" + str(x) + "," + str(y) + ")")
             if not x == '' and not y == '':
                 current_address = get_address_by_coord(x, y)
-                print("second")
                 print(current_address)
             page.screenshot(path='video-images-opencv/image' + str(i) + '.png')
             i += 1
