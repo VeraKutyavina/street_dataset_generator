@@ -8,7 +8,7 @@ from django.template import loader
 from maps.forms import CreateDatasetForm
 # from maps.services.FramesService import create_frames
 from maps.services.MLService import counting_cars
-from maps.services.OSMService import osm_query, get_street_in_city
+from maps.services.OSMService import osm_query, get_street_in_city, get_street_in_place
 from maps.services.VideoServices import create_map_video
 
 import pandas as pd
@@ -42,7 +42,8 @@ def create_video_view(request):
 
     if request.method == 'POST':
         address = request.POST['address']
-        get_street_in_city(address)
+        # get_street_in_city(address)
+        get_street_in_place()
         # create_map_video(address)
 
     total = time.time() - start_time

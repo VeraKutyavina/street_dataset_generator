@@ -39,3 +39,27 @@ def get_street_in_city(place_name):
 
     print(streets)
     print(len(streets))
+
+
+def get_street_in_place():
+    # координаты прямоугольника
+    north, south, east, west = 55.79, 55.82, 49.16, 49.11
+
+    tags = {"highway": True}
+
+    # Получение графа дорожной сети области
+    G = ox.graph_from_bbox(north, south, east, west, network_type="all")
+
+    print('HI')
+
+    # Получение списка всех улиц области
+    streets = []
+    for u, v, k, data in G.edges(keys=True, data=True):
+        if 'highway' and 'name' in data.keys():
+            street_name = data['name']
+            if street_name not in streets and isinstance(street_name, str):
+                streets.append(street_name)
+
+    # Вывод списка улиц
+    print(streets)
+
