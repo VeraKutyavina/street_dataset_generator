@@ -6,11 +6,11 @@
             {% csrf_token %}
             <label>
                 Address
-                <div>{{form.address}}</div>
+                <input id="address-input" style="width: 100%" name="address">
             </label>
             <br />
-            <button type="submit" class="btn btn-primary pink-button">Record Video</button>
-{#            <button type="button" id="record-video" class="btn btn-primary pink-button">Record Video</button>#}
+{#            <button type="submit" class="btn btn-primary pink-button">Record Video</button>#}
+            <button type="button" id="record-video" class="btn btn-primary pink-button">Record Video</button>
         </form>
         <div id="data-loader" class="lds-ring"><div></div><div></div><div></div><div></div></div>
          <form action="">
@@ -39,12 +39,11 @@
             $.ajax({
                 url: url,
                 type: "POST",
-                timeout: 0,
-                processData: false,
-                mimeType: "multipart/form-data",
-                contentType: false,
+                data : {
+                  address: $("#address-input").val(),
+                  csrfmiddlewaretoken: $crf_token,
+                },
                 headers:{"X-CSRFToken": $crf_token},
-                dataType:"json",
                 error: (e) => console.log(e),
                 complete: () => {
                     $(loader).hide();

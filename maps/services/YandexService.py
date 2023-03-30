@@ -7,6 +7,4 @@ client = Client(YANDEX_API_KEY)
 
 def get_coord_by_address(address):
     coordinates = client.coordinates(address)
-    print(coordinates[0])
     return coordinates
-
