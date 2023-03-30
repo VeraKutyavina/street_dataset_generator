@@ -41,6 +41,8 @@ def record_video_with_playwright(coordinates, address, heading):
             x = page.get_by_test_id('coordinate-x').all_inner_texts()[0]
             y = page.get_by_test_id('coordinate-y').all_inner_texts()[0]
 
+            print("Current points: (" + str(x) + "," + str(y) + ")")
+
             if not x == '' and not y == '':
                 current_address = get_address_by_coord(x, y)
                 print(current_address)
