@@ -4,7 +4,9 @@ import glob
 
 from playwright.sync_api import sync_playwright
 
+from maps.services.AddreessService import get_heading_param
 from maps.services.DadataService import get_address_by_coord, get_street_by_coord
+from maps.services.OSMService import get_random_points
 from maps.services.YandexService import get_coord_by_address
 
 MAPS_URL = 'http://127.0.0.1:8000/maps/'
@@ -21,9 +23,9 @@ def convert_webm_to_mp4():
     subprocess.run(command, shell=True)
 
 
-def record_video_with_playwright(coordinates, address):
+def record_video_with_playwright(coordinates, address, heading):
     i = 0
-    url = MAPS_URL + '?x=' + str(coordinates[1]) + '&y=' + str(coordinates[0])
+    url = MAPS_URL + '?x=' + str(coordinates[1]) + '&y=' + str(coordinates[0]) + '&heading=' + str(heading)
     with sync_playwright() as p:
         browser = p.chromium.launch()
         context = browser.new_context(record_video_dir=VIDEO_RECORD_DIR)
@@ -32,6 +34,7 @@ def record_video_with_playwright(coordinates, address):
         page.wait_for_timeout(1000)
         current_address = [address]
         while any(address in x for x in current_address):
+            page.keyboard.press('ArrowUp')
             page.keyboard.press('ArrowUp')
             page.keyboard.press('ArrowUp')
 
@@ -55,6 +58,7 @@ def record_video_with_playwright(coordinates, address):
         page.wait_for_timeout(1000)
         current_address = [address]
         while any(address in x for x in current_address):
+            page.keyboard.press('ArrowDown')
             page.keyboard.press('ArrowDown')
             page.keyboard.press('ArrowDown')
 
@@ -75,7 +79,10 @@ def record_video_with_playwright(coordinates, address):
 def create_map_video(address):
     coordinates = get_coord_by_address(address)
     street = get_street_by_coord(coordinates[1], coordinates[0])
-    record_video_with_playwright(coordinates, street)
+    points = get_random_points(address)
+    heading = get_heading_param(points[0], points[1])
+
+    record_video_with_playwright(coordinates, street, heading)
     # convert_webm_to_mp4()
 
 

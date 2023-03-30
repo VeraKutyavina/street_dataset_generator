@@ -40,7 +40,6 @@ def create_video_view(request):
 
     if request.method == 'POST':
         address = request.POST['address']
-        print(address)
         create_map_video(address)
 
     dict = {}

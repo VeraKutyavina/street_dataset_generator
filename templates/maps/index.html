@@ -16,6 +16,7 @@
         const urlParams = new URLSearchParams(queryString);
         const x = urlParams.get('x')
         const y = urlParams.get('y')
+        const heading = urlParams.get('heading')
 
         const center = [x, y];
         ymaps.ready(() => {
@@ -23,10 +24,12 @@
                 return;
             }
             ymaps.panorama.createPlayer('player2', center, {
-                hotkeysEnabled: true
+                hotkeysEnabled: true,
+                direction: [heading, 0],
             }).then(player => {
                 player.events.add('panoramachange',() => {
-                    const [panorama_x, panorama_y] = player.getPanorama().getPosition();
+                    const panorama = player.getPanorama();
+                    const [panorama_x, panorama_y] = panorama.getPosition();
                     document.getElementById('coordinate-x').innerHTML = panorama_x;
                     document.getElementById('coordinate-y').innerHTML = panorama_y;
                 });

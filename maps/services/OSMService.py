@@ -1,5 +1,6 @@
 import osmnx as ox
 import numpy as np
+import requests
 
 
 def osm_query(tag, city):
@@ -10,3 +11,15 @@ def osm_query(tag, city):
     gdf = gdf[['city', 'object', 'type', 'geometry']]
     print(gdf)
     return gdf
+
+
+def get_random_points(address):
+    url = f"https://nominatim.openstreetmap.org/search?q={address}&format=json"
+
+    response = requests.get(url)
+    data = response.json()
+
+    point1 = (float(data[0]['lon']), float(data[0]['lat']))
+    point2 = (float(data[1]['lon']), float(data[1]['lat']))
+
+    return [point1, point2]
