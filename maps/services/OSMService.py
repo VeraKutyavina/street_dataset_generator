@@ -23,3 +23,19 @@ def get_random_points(address):
     point2 = (float(data[1]['lon']), float(data[1]['lat']))
 
     return [point1, point2]
+
+
+def get_street_in_city(place_name):
+    # получаем граф дорог города
+    graph = ox.graph_from_place(place_name, network_type='all')
+
+    # получаем список всех улиц города
+    streets = []
+    for u, v, k, data in graph.edges(keys=True, data=True):
+        if 'highway' and 'name' in data.keys():
+            street_name = data['name']
+            if street_name not in streets and isinstance(street_name, str):
+                streets.append(street_name)
+
+    print(streets)
+    print(len(streets))
