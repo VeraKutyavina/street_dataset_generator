@@ -5,7 +5,7 @@
         <form class="addressForm" action="/maps/create_video" method="POST">
             {% csrf_token %}
             <label>
-                Address
+                Street Name
                 <input id="address-input" style="width: 100%" name="address">
             </label>
             <br />
@@ -24,6 +24,22 @@
         </form>
         <div id="osm-loader" class="lds-ring"><div></div><div></div><div></div><div></div></div>
     </div>
+    <label>
+        North
+        <input type="number" id="north-input" style="width: 100%" name="north">
+    </label>
+    <label>
+        South
+        <input type="number" id="south-input" style="width: 100%" name="south">
+    </label>
+    <label>
+        East
+        <input type="number" id="east-input" style="width: 100%" name="east">
+    </label>
+    <label>
+        West
+        <input type="number" id="west-input" style="width: 100%" name="west">
+    </label>
     <div id="success-upload" class="result">Video uploaded successfully!</div>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
@@ -40,8 +56,12 @@
                 url: url,
                 type: "POST",
                 data : {
-                  address: $("#address-input").val(),
-                  csrfmiddlewaretoken: $crf_token,
+                    north: $("#north-input").val(),
+                    south: $("#south-input").val(),
+                    east: $("#east-input").val(),
+                    west: $("#west-input").val(),
+                    address: $("#address-input").val(),
+                    csrfmiddlewaretoken: $crf_token,
                 },
                 headers:{"X-CSRFToken": $crf_token},
                 error: (e) => console.log(e),

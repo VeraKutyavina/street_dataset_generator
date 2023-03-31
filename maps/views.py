@@ -6,10 +6,9 @@ from django.shortcuts import render
 from django.template import loader
 
 from maps.forms import CreateDatasetForm
-# from maps.services.FramesService import create_frames
+from maps.healpers import collect_screenshots
 from maps.services.MLService import counting_cars
 from maps.services.OSMService import osm_query
-from maps.services.VideoServices import create_map_video
 
 import pandas as pd
 
@@ -36,13 +35,10 @@ def user_form_view(request):
 
 
 def create_video_view(request):
-    # address = request.POST['address']
-    # print(address)
     start_time = time.time()
 
     if request.method == 'POST':
-        address = request.POST['address']
-        create_map_video(address)
+        collect_screenshots(request)
 
     total = time.time() - start_time
 
@@ -53,7 +49,6 @@ def create_video_view(request):
 
 
 def counting_view(request):
-    # create_frames()
     total_count = counting_cars()
     dict = {'count': total_count}
     return HttpResponse(json.dumps(dict), content_type='application/json')

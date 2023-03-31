@@ -53,7 +53,7 @@ def record_video_with_playwright(coordinates, address, heading):
             if not x == '' and not y == '':
                 current_address = get_address_by_coord(x, y)
                 print(current_address)
-            page.screenshot(path='video-images-opencv/image' + str(i) + '.png')
+            page.screenshot(path='video-images-opencv/' + address + '/image' + str(i) + '.png')
             i += 1
             page.wait_for_timeout(500)
         browser.close()
@@ -84,7 +84,7 @@ def record_video_with_playwright(coordinates, address, heading):
             if not x == '' and not y == '':
                 current_address = get_address_by_coord(x, y)
                 print(current_address)
-            page.screenshot(path='video-images-opencv/image' + str(i) + '.png')
+            page.screenshot(path='video-images-opencv/' + address + '/image' + str(i) + '.png')
             i += 1
             page.wait_for_timeout(500)
         browser.close()
@@ -92,6 +92,7 @@ def record_video_with_playwright(coordinates, address, heading):
 
 
 def create_map_video(address):
+    print(address)
     coordinates = get_coord_by_address(address)
     street = get_street_by_coord(coordinates[1], coordinates[0])
     points = get_random_points(address)
