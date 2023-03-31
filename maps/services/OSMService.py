@@ -1,6 +1,7 @@
 import osmnx as ox
 import numpy as np
 import requests
+import osmapi
 
 
 def osm_query(tag, city):
@@ -19,8 +20,13 @@ def get_random_points(address):
     response = requests.get(url)
     data = response.json()
 
-    point1 = (float(data[0]['lon']), float(data[0]['lat']))
-    point2 = (float(data[1]['lon']), float(data[1]['lat']))
+    if len(data) > 2:
+        point1 = (float(data[0]['lon']), float(data[0]['lat']))
+        point2 = (float(data[1]['lon']), float(data[1]['lat']))
+    else:
+        point1 = (float(data[0]['boundingbox'][0]), float(data[0]['boundingbox'][2]))
+        point2 = (float(data[0]['boundingbox'][1]), float(data[0]['boundingbox'][3]))
+
 
     return [point1, point2]
 
@@ -45,13 +51,26 @@ def get_street_in_city(place_name):
     print(len(streets))
 
 
-def get_street_in_place():
-    # rectangle coordinates
-    north, south, east, west = 55.79, 55.82, 49.16, 49.11
+def get_street_in_place(north, south, east, west):
     graph = ox.graph_from_bbox(north, south, east, west, network_type="all")
 
     streets = get_streets_name(graph)
 
-    print(streets)
-    print(len(streets))
+    return streets
 
+
+def get_city_name(north, south, east, west):
+    api = osmapi.OsmApi()
+    print(float(east), float(north), float(west), float(south))
+    bbox = (float(east), float(north), float(west), float(south))
+
+    data = api.Map(*bbox)
+
+    city_name = ''
+    for elem in data:
+        if 'tag' in elem['data']:
+            if 'addr:city' in elem['data']['tag']:
+                city_name = elem['data']['tag']['addr:city']
+                break
+
+    return city_name
