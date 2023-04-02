@@ -7,9 +7,8 @@ from django.template import loader
 
 from maps.forms import CreateDatasetForm
 from maps.healpers import collect_screenshots
+from maps.models import OsmTag
 from maps.services.MLService import counting_cars
-
-from maps.services.OSMService import get_primary_features
 
 SAVING_FRAMES_PER_SECOND = 1
 
@@ -54,5 +53,5 @@ def counting_view(request):
 
 
 def get_osm_data(request):
-    get_primary_features()
+
     return render(request, 'maps/index.html', {})

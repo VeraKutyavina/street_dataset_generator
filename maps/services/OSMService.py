@@ -2,12 +2,6 @@ import osmnx as ox
 import requests
 import osmapi
 
-def get_primary_features():
-    api = osmapi.OsmApi()
-    primary_features = api.PrimaryFeatures()
-
-    print(primary_features)
-
 
 def get_random_points(address):
     url = f"https://nominatim.openstreetmap.org/search?q={address}&format=json"
