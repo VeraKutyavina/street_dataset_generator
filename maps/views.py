@@ -53,5 +53,5 @@ def counting_view(request):
 
 
 def get_osm_data(request):
-    get_street_data()
+    get_street_data('Казань')
     return render(request, 'maps/index.html', {})

@@ -1,8 +1,9 @@
 import osmnx as ox
 import requests
 import osmapi
+import shapely
 
-from maps.services.DadataService import get_address_by_coord, get_street_by_coord
+from maps.services.TomTomService import get_addresses
 
 
 def get_random_points(address):
@@ -17,7 +18,6 @@ def get_random_points(address):
     else:
         point1 = (float(data[0]['boundingbox'][0]), float(data[0]['boundingbox'][2]))
         point2 = (float(data[0]['boundingbox'][1]), float(data[0]['boundingbox'][3]))
-
 
     return [point1, point2]
 
@@ -34,7 +34,6 @@ def get_streets_name(graph):
 
 
 def get_street_in_city(place_name):
-    # graph of available city roads
     graph = ox.graph_from_place(place_name, network_type='all')
     streets = get_streets_name(graph)
 
@@ -70,13 +69,22 @@ def get_city_name(north, south, east, west):
 def get_street_data(city_name):
     tag = {'amenity': 'cafe'}
     cafes = ox.geometries_from_place(city_name, tag)
-    num_cafes = len(cafes)
 
-    print("Количество кафе на улице: ", num_cafes)
+    coordinates = []
+    cafes_dict = {}
     for index, row in cafes.iterrows():
-        # street = get_street_by_coord(row['geometry'].y, row['geometry'].x)
-        print(row['name'])
+        if type(row['geometry']) == shapely.geometry.point.Point:
+            current_coordinates = (row['geometry'].y, row['geometry'].x)
+            coordinates.append(current_coordinates)
+            cafes_dict[current_coordinates] = row['name']
 
-    print(cafes.columns)
-    print("Количество кафе ", len(cafes))
+    address_coordinates_dict = get_addresses(coordinates)
 
+    result = {}
+    for key in cafes_dict.keys():
+        result[cafes_dict[key]] = address_coordinates_dict[key]
+
+    for key in result.keys():
+        print(str(key) + ': ' + str(result[key]))
+
+    print("Количество кафе ", len(cafes_dict))
