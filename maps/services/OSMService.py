@@ -2,6 +2,8 @@ import osmnx as ox
 import requests
 import osmapi
 
+from maps.services.DadataService import get_address_by_coord, get_street_by_coord
+
 
 def get_random_points(address):
     url = f"https://nominatim.openstreetmap.org/search?q={address}&format=json"
@@ -63,3 +65,18 @@ def get_city_name(north, south, east, west):
                 break
 
     return city_name
+
+
+def get_street_data(city_name):
+    tag = {'amenity': 'cafe'}
+    cafes = ox.geometries_from_place(city_name, tag)
+    num_cafes = len(cafes)
+
+    print("Количество кафе на улице: ", num_cafes)
+    for index, row in cafes.iterrows():
+        # street = get_street_by_coord(row['geometry'].y, row['geometry'].x)
+        print(row['name'])
+
+    print(cafes.columns)
+    print("Количество кафе ", len(cafes))
+
