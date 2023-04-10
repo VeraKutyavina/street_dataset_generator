@@ -11,4 +11,4 @@ class OsmTag(models.Model):
     description = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return f"{self.key}={self.value}"
+        return f"{self.key}={self.value}-{self.description}"

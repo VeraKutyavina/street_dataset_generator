@@ -3,6 +3,7 @@ import requests
 
 URL = "https://api.tomtom.com/search/2/batch/sync.json?key=AKsJwMrvQ4DrSMW4Gc1COArEByeDm256"
 
+
 def split_array(original_array):
     subarrays = []
     temp = []

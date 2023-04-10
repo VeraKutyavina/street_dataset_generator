@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.template import loader
 
 from maps.forms import CreateDatasetForm
-from maps.healpers import collect_screenshots
+from maps.healpers import collect_screenshots, collect_osm_data
 from maps.services.MLService import counting_cars
 from maps.services.OSMService import get_street_data
 
@@ -53,5 +53,6 @@ def counting_view(request):
 
 
 def get_osm_data(request):
-    get_street_data('Казань')
+    if request.method == 'POST':
+        collect_osm_data(request)
     return render(request, 'maps/index.html', {})
