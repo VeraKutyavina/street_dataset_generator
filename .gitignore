@@ -59,3 +59,4 @@ video-images-opencv
 dnn_model
 .DS_Store
 cache
+data.txt

@@ -6,11 +6,47 @@
             {% csrf_token %}
             <label>
                 Street Name
-                <input id="address-input" style="width: 100%" name="address">
+                <input class="form-control" id="address-input" style="width: 100%" name="address">
+            </label>
+            <div class="my-2">
+                ИЛИ
+            </div>
+             <div class="mb-1">
+                <label>
+                North
+                <input class="form-control" type="number" id="north-input" style="width: 100%" name="north">
+                </label>
+                <label>
+                    South
+                    <input class="form-control" type="number" id="south-input" style="width: 100%" name="south">
+                </label>
+                <label>
+                    East
+                    <input class="form-control" type="number" id="east-input" style="width: 100%" name="east">
+                </label>
+                <label>
+                    West
+                    <input class="form-control" type="number" id="west-input" style="width: 100%" name="west">
+                </label>
+            </div>
+            <label>
+                Объект
+                <select id="item-select" class="form-select mt-2" aria-label="Default select example">
+                    <option value="cafe=amenity">Кафе</option>
+                    <option value="restaurant=amenity">Ресторан</option>
+                    <option value="college=amenity">Колледж</option>
+                    <option value="traffic_park=amenity">Парковка</option>
+                    <option value="university=amenity">Университет</option>
+                    <option value="bus_station=amenity">Автобусная остановка</option>
+                    <option value="cinema=amenity">Кинотеатр</option>
+                    <option value="house=building">Дом</option>
+                    <option value="apartments=building">Квартира</option>
+                    <option value="hotel=building">Отель</option>
+                </select>
             </label>
             <br />
 {#            <button type="submit" class="btn btn-primary pink-button">Record Video</button>#}
-            <button type="button" id="record-video" class="btn btn-primary pink-button">Record Video</button>
+            <button type="button" id="get_osm_data" class="btn btn-primary pink-button">Get data</button>
         </form>
         <div id="data-loader" class="lds-ring"><div></div><div></div><div></div><div></div></div>
          <form action="">
@@ -20,26 +56,10 @@
         <div id="counting-loader" class="lds-ring"><div></div><div></div><div></div><div></div></div>
         <form action="">
             {% csrf_token %}
-            <button type="button" id="get_osm_data" class="btn btn-primary pink-button">Get data</button>
+            <button type="button" id="record-video" class="btn btn-primary pink-button">Record Video</button>
         </form>
         <div id="osm-loader" class="lds-ring"><div></div><div></div><div></div><div></div></div>
     </div>
-    <label>
-        North
-        <input type="number" id="north-input" style="width: 100%" name="north">
-    </label>
-    <label>
-        South
-        <input type="number" id="south-input" style="width: 100%" name="south">
-    </label>
-    <label>
-        East
-        <input type="number" id="east-input" style="width: 100%" name="east">
-    </label>
-    <label>
-        West
-        <input type="number" id="west-input" style="width: 100%" name="west">
-    </label>
     <div id="success-upload" class="result">Video uploaded successfully!</div>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
@@ -61,6 +81,7 @@
                     east: $("#east-input").val(),
                     west: $("#west-input").val(),
                     address: $("#address-input").val(),
+                    osm_item: $("#item-select").val(),
                     csrfmiddlewaretoken: $crf_token,
                 },
                 headers:{"X-CSRFToken": $crf_token},
@@ -73,7 +94,7 @@
                 },
                 success: (resp) => {
                     console.log(resp.count)
-                    if (!text) $('#buttons').after("<div class=\"result-success\"> Result: " + resp.count + "</div>")
+                    if (!text) $('#buttons').after("<a href=\"/maps/download\">Скачать файл</a>")
                 }
             })
         }

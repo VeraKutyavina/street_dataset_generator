@@ -8,4 +8,5 @@ urlpatterns = [
     path('counting', views.counting_view, name='counting'),
     path('get_osm_data', views.get_osm_data, name='get_osm_data'),
     path('interface', views.user_form_view, name='user_form_view'),
+    path('download', views.download_file, name='download'),
 ]

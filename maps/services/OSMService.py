@@ -66,8 +66,9 @@ def get_city_name(north, south, east, west):
     return city_name
 
 
-def get_street_data(city_name):
-    tag = {'amenity': 'cafe'}
+def get_street_data(city_name, street_name, osm_item):
+    tag_parts = osm_item.split('=')
+    tag = {tag_parts[1]: tag_parts[0]}
     cafes = ox.geometries_from_place(city_name, tag)
 
     coordinates = []
@@ -82,9 +83,14 @@ def get_street_data(city_name):
 
     result = {}
     for key in cafes_dict.keys():
-        result[cafes_dict[key]] = address_coordinates_dict[key]
+        if street_name.lower() in address_coordinates_dict[key].lower():
+            result[cafes_dict[key]] = address_coordinates_dict[key]
 
+    f = open('data.txt', 'w+')
     for key in result.keys():
-        print(str(key) + ': ' + str(result[key]))
+        f.write(str(key) + ': ' + str(result[key]))
+        f.write('\n')
 
-    print("Количество кафе ", len(cafes_dict))
+    f.close()
+
+    print("Количество кафе ", len(result))
