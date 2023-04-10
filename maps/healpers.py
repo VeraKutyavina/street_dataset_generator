@@ -23,11 +23,22 @@ def collect_screenshots(request):
 
 
 def collect_osm_data(request):
+    north = request.POST['north']
+    south = request.POST['south']
+    east = request.POST['east']
+    west = request.POST['west']
     address = request.POST['address']
     osm_item = request.POST['osm_item']
 
-    coordinates = get_coord_by_address(address)
-    street = get_street_by_coord(coordinates[1], coordinates[0])
-    city = get_city_by_coord(coordinates[1], coordinates[0])
+    if bool(address):
+        coordinates = get_coord_by_address(address)
+        street = get_street_by_coord(coordinates[1], coordinates[0])
+        city = get_city_by_coord(coordinates[1], coordinates[0])
 
-    get_street_data(city, street, osm_item)
+        get_street_data(city, street, osm_item)
+    elif bool(north) and bool(south) and bool(east) and bool(west):
+        city = get_city_name(north, south, east, west)
+        streets = get_street_in_place(north, south, east, west)
+
+        for street in streets:
+            get_street_data(city, street, osm_item)
