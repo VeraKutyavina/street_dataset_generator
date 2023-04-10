@@ -46,7 +46,7 @@
             </label>
             <br />
 {#            <button type="submit" class="btn btn-primary pink-button">Record Video</button>#}
-            <button type="button" id="record-video" class="btn btn-primary pink-button">Record Video</button>
+            <button type="button" id="get_osm_data" class="btn btn-primary pink-button">Get data</button>
         </form>
         <div id="data-loader" class="lds-ring"><div></div><div></div><div></div><div></div></div>
          <form action="">
@@ -56,7 +56,7 @@
         <div id="counting-loader" class="lds-ring"><div></div><div></div><div></div><div></div></div>
         <form action="">
             {% csrf_token %}
-            <button type="button" id="get_osm_data" class="btn btn-primary pink-button">Get data</button>
+            <button type="button" id="record-video" class="btn btn-primary pink-button">Record Video</button>
         </form>
         <div id="osm-loader" class="lds-ring"><div></div><div></div><div></div><div></div></div>
     </div>
@@ -94,7 +94,7 @@
                 },
                 success: (resp) => {
                     console.log(resp.count)
-                    if (!text) $('#buttons').after("<div class=\"result-success\"> Result: " + resp.count + "</div>")
+                    if (!text) $('#buttons').after("<a href=\"/maps/download\">Скачать файл</a>")
                 }
             })
         }

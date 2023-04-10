@@ -86,7 +86,11 @@ def get_street_data(city_name, street_name, osm_item):
         if street_name.lower() in address_coordinates_dict[key].lower():
             result[cafes_dict[key]] = address_coordinates_dict[key]
 
+    f = open('data.txt', 'w+')
     for key in result.keys():
-        print(str(key) + ': ' + str(result[key]))
+        f.write(str(key) + ': ' + str(result[key]))
+        f.write('\n')
+
+    f.close()
 
     print("Количество кафе ", len(result))

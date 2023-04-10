@@ -1,14 +1,14 @@
 import json
+import os
 import time
 
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.shortcuts import render
 from django.template import loader
 
 from maps.forms import CreateDatasetForm
 from maps.healpers import collect_screenshots, collect_osm_data
 from maps.services.MLService import counting_cars
-from maps.services.OSMService import get_street_data
 
 SAVING_FRAMES_PER_SECOND = 1
 
@@ -56,3 +56,11 @@ def get_osm_data(request):
     if request.method == 'POST':
         collect_osm_data(request)
     return render(request, 'maps/index.html', {})
+
+
+def download_file(request):
+    file_path = 'data.txt'
+    with open(file_path, 'rb') as fh:
+        response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
+        response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
+        return response
