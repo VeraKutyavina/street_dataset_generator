@@ -8,7 +8,7 @@ from django.template import loader
 
 from maps.forms import CreateDatasetForm
 from maps.healpers import collect_screenshots, collect_osm_data
-from maps.services.MLService import counting_cars, detect_objects
+from maps.services.MLService import detect_objects
 
 SAVING_FRAMES_PER_SECOND = 1
 
@@ -47,7 +47,6 @@ def create_video_view(request):
 
 
 def counting_view(request):
-    # total_count = counting_cars()
     detect_objects()
     dict = {'count': 0}
     return HttpResponse(json.dumps(dict), content_type='application/json')

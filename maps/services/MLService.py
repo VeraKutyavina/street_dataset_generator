@@ -1,25 +1,5 @@
-from maps.classes.vehicle_detector import VehicleDetector
 import cv2
-import glob
 import numpy as np
-from art import tprint
-
-
-def counting_cars():
-    vd = VehicleDetector()
-    images_folder = glob.glob("video-images-opencv/*.png")
-    vehicles_folder_count = 0
-
-    for img_path in images_folder:
-        img = cv2.imread(img_path)
-        vehicle_boxes = vd.detect_vehicles(img)
-        vehicle_count = len(vehicle_boxes)
-        vehicles_folder_count += vehicle_count
-
-    print("Total count", vehicles_folder_count)
-
-    return vehicles_folder_count
-
 
 def apply_yolo_object_detection(image_to_process, net, classes_to_look_for):
     layer_names = net.getLayerNames()
@@ -35,7 +15,6 @@ def apply_yolo_object_detection(image_to_process, net, classes_to_look_for):
     net.setInput(blob)
     outs = net.forward(out_layers)
     class_indexes, class_scores, boxes = ([] for i in range(3))
-    objects_count = 0
 
     # Starting a search for objects in an image
     for out in outs:
@@ -58,6 +37,12 @@ def apply_yolo_object_detection(image_to_process, net, classes_to_look_for):
     chosen_boxes = cv2.dnn.NMSBoxes(boxes, class_scores, 0.0, 0.4)
 
     print(chosen_boxes)
+
+    result = {}
+
+    for look_class in classes_to_look_for:
+        result[look_class] = 0
+
     for box_index in chosen_boxes:
         box_index = box_index
         box = boxes[box_index]
@@ -66,10 +51,11 @@ def apply_yolo_object_detection(image_to_process, net, classes_to_look_for):
         print(classes[class_index], classes_to_look_for)
 
         # For debugging, we draw objects included in the desired classes
-        if classes[class_index] in classes_to_look_for:
-            objects_count += 1
+        current_class = classes[class_index]
+        if current_class in classes_to_look_for:
+            result[current_class] += 1
 
-    print(objects_count, "HI")
+    print(result)
 
     return ''
 
@@ -87,11 +73,9 @@ def start_image_object_detection(img_path, classes_to_look_for):
 
 
 def detect_objects():
-    # Loading YOLO scales from files and setting up the network
+    # images_folder = glob.glob("video-images-opencv/*.png")
 
-    images_folder = glob.glob("video-images-opencv/*.png")
-
-    image = "video-images-opencv/Большая Красная/image33.png"
+    image = "video-images-opencv/Пушкина/image0.png"
     look_for = "person,car"
 
     # Delete spaces
