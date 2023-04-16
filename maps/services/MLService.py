@@ -13,6 +13,13 @@ lower_white = np.array([0, 0, 200])
 upper_white = np.array([180, 30, 255])
 
 
+def save_img(box, image_to_process, i):
+    x, y, w, h = box
+    cropped_image = image_to_process[y:y + h, x:x + w]
+    cv2.imwrite(f'box_{i}.jpg', cropped_image)
+    i += 1
+
+
 def detect_colors(img, boxes):
     # преобразование в цветовое пространство HSV
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
@@ -75,7 +82,10 @@ def apply_yolo_object_detection(image_to_process, net, classes_to_look_for):
     # Selection
     chosen_boxes = cv2.dnn.NMSBoxes(boxes, class_scores, 0.0, 0.4)
 
-    print(chosen_boxes)
+    i = 0
+    for box in chosen_boxes:
+        save_img(boxes[box], image_to_process, i)
+        i += 1
 
     result = {}
     cars_boxes = []
@@ -96,6 +106,18 @@ def apply_yolo_object_detection(image_to_process, net, classes_to_look_for):
     print(result)
 
     detect_colors(image_to_process, cars_boxes)
+
+    # i = 0
+    # img = cv2.cvtColor(image_to_process, cv2.COLOR_BGR2RGB)
+    # img = torch.from_numpy(img).permute(2, 0, 1).float().unsqueeze(0) / 255.0
+    # for box_item in boxes:
+    #     x1, y1, x2, y2 = box_item
+    #     cv2.rectangle(img, (int(x1), int(y1)), (int(x2), int(y2)), (255, 0, 0), 2)
+    #     cropped_img = img[:, :, int(y1):int(y2), int(x1):int(x2)]
+    #
+    #     # Сохранение вырезанной части изображения с помощью OpenCV
+    #     cv2.imwrite(f'result_{i}.jpg', cropped_img.permute(1, 2, 0).numpy() * 255)
+    #     i += 1
 
     return ''
 
