@@ -1,6 +1,52 @@
 import cv2
 import numpy as np
 
+lower_red = np.array([0, 70, 50])
+upper_red = np.array([10, 255, 255])
+lower_blue = np.array([110, 50, 50])
+upper_blue = np.array([130, 255, 255])
+lower_green = np.array([50, 50, 50])
+upper_green = np.array([70, 255, 255])
+lower_black = np.array([0, 0, 0])
+upper_black = np.array([180, 255, 30])
+lower_white = np.array([0, 0, 200])
+upper_white = np.array([180, 30, 255])
+
+
+def save_img(box, image_to_process, i):
+    x, y, w, h = box
+    cropped_image = image_to_process[y:y + h, x:x + w]
+    cv2.imwrite(f'box_{i}.jpg', cropped_image)
+    i += 1
+
+
+def detect_colors(img, boxes):
+    # преобразование в цветовое пространство HSV
+    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+
+    # пороговая обработка для выделения машин каждого цвета
+    mask_red = cv2.inRange(hsv, lower_red, upper_red)
+    mask_blue = cv2.inRange(hsv, lower_blue, upper_blue)
+    mask_green = cv2.inRange(hsv, lower_green, upper_green)
+    mask_white = cv2.inRange(hsv, lower_green, upper_green)
+    mask_black = cv2.inRange(hsv, lower_green, upper_green)
+
+    # находим цвет
+    for contour in boxes:
+        x, y, w, h = contour
+
+        blue_score = cv2.mean(mask_blue[y:y + h, x:x + w])[0]
+        white_score = cv2.mean(mask_white[y:y + h, x:x + w])[0]
+        black_score = cv2.mean(mask_black[y:y + h, x:x + w])[0]
+        red_score = cv2.mean(mask_red[y:y + h, x:x + w])[0]
+        green_score = cv2.mean(mask_green[y:y + h, x:x + w])[0]
+
+        scores = {'blue': blue_score, 'white': white_score, 'black': black_score, 'red': red_score, 'green': green_score}
+        color = max(scores, key=scores.get)
+
+        print(color)
+
+
 def apply_yolo_object_detection(image_to_process, net, classes_to_look_for):
     layer_names = net.getLayerNames()
     out_layers_indexes = net.getUnconnectedOutLayers()
@@ -36,27 +82,30 @@ def apply_yolo_object_detection(image_to_process, net, classes_to_look_for):
     # Selection
     chosen_boxes = cv2.dnn.NMSBoxes(boxes, class_scores, 0.0, 0.4)
 
-    print(chosen_boxes)
+    i = 0
+    for box in chosen_boxes:
+        save_img(boxes[box], image_to_process, i)
+        i += 1
 
     result = {}
+    cars_boxes = []
 
     for look_class in classes_to_look_for:
         result[look_class] = 0
 
     for box_index in chosen_boxes:
-        box_index = box_index
-        box = boxes[box_index]
         class_index = class_indexes[box_index]
 
-        print(classes[class_index], classes_to_look_for)
-
-        # For debugging, we draw objects included in the desired classes
         current_class = classes[class_index]
         if current_class in classes_to_look_for:
             result[current_class] += 1
 
+        if current_class == 'car':
+            cars_boxes.append(boxes[box_index])
+
     print(result)
 
+    detect_colors(image_to_process, cars_boxes)
     return ''
 
 
@@ -64,9 +113,8 @@ def start_image_object_detection(img_path, classes_to_look_for):
     net = cv2.dnn.readNetFromDarknet("Resources/yolov4-tiny.cfg",
                                      "Resources/yolov4-tiny.weights")
     try:
-        # Applying Object Recognition Techniques in an Image by YOLO
         image = cv2.imread(img_path)
-        image = apply_yolo_object_detection(image, net, classes_to_look_for)
+        apply_yolo_object_detection(image, net, classes_to_look_for)
 
     except KeyboardInterrupt:
         pass
@@ -80,7 +128,6 @@ def detect_objects():
 
     # Delete spaces
     list_look_for = look_for.split(',')
-
     classes_to_look_for = list_look_for
 
     start_image_object_detection(image, classes_to_look_for)
