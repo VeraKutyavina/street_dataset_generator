@@ -106,19 +106,6 @@ def apply_yolo_object_detection(image_to_process, net, classes_to_look_for):
     print(result)
 
     detect_colors(image_to_process, cars_boxes)
-
-    # i = 0
-    # img = cv2.cvtColor(image_to_process, cv2.COLOR_BGR2RGB)
-    # img = torch.from_numpy(img).permute(2, 0, 1).float().unsqueeze(0) / 255.0
-    # for box_item in boxes:
-    #     x1, y1, x2, y2 = box_item
-    #     cv2.rectangle(img, (int(x1), int(y1)), (int(x2), int(y2)), (255, 0, 0), 2)
-    #     cropped_img = img[:, :, int(y1):int(y2), int(x1):int(x2)]
-    #
-    #     # Сохранение вырезанной части изображения с помощью OpenCV
-    #     cv2.imwrite(f'result_{i}.jpg', cropped_img.permute(1, 2, 0).numpy() * 255)
-    #     i += 1
-
     return ''
 
 
