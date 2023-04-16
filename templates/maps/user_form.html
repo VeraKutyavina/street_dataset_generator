@@ -5,7 +5,7 @@
         <form class="addressForm" action="/maps/create_video" method="POST">
             {% csrf_token %}
             <label>
-                Street Name
+                Адрес
                 <input class="form-control" id="address-input" style="width: 100%" name="address">
             </label>
             <div class="my-2">
@@ -13,60 +13,100 @@
             </div>
              <div class="mb-1">
                 <label>
-                North
+                Север
                 <input class="form-control" type="number" id="north-input" style="width: 100%" name="north">
                 </label>
                 <label>
-                    South
+                    Юг
                     <input class="form-control" type="number" id="south-input" style="width: 100%" name="south">
                 </label>
                 <label>
-                    East
+                    Запад
                     <input class="form-control" type="number" id="east-input" style="width: 100%" name="east">
                 </label>
                 <label>
-                    West
+                    Восток
                     <input class="form-control" type="number" id="west-input" style="width: 100%" name="west">
                 </label>
             </div>
-            <label>
-                Объект
-                <select id="item-select" class="form-select mt-2" aria-label="Default select example">
-                    <option value="cafe=amenity">Кафе</option>
-                    <option value="restaurant=amenity">Ресторан</option>
-                    <option value="college=amenity">Колледж</option>
-                    <option value="traffic_park=amenity">Парковка</option>
-                    <option value="university=amenity">Университет</option>
-                    <option value="bus_station=amenity">Автобусная остановка</option>
-                    <option value="cinema=amenity">Кинотеатр</option>
-                    <option value="house=building">Дом</option>
-                    <option value="apartments=building">Квартира</option>
-                    <option value="hotel=building">Отель</option>
-                </select>
-            </label>
+            <div id="maps-select-1" class="select_group mb-4 mt-2">
+               <label class="select_label">
+                    Объекты с панорам
+                    <select id="maps-item-select-1" class="mt-2">
+                        <option value="person">Человек</option>
+                        <option value="car">Машина</option>
+                        <option value="bicycle">Велосипед</option>
+                        <option value="motorbike">Мотоциклы</option>
+                        <option value="bus">Автобус</option>
+                        <option value="train">Поезд</option>
+                        <option value="cat">Кошка</option>
+                        <option value="dog">Собака</option>
+                        <option value="boat">Лодка</option>
+                        <option value="traffic light">Светофор</option>
+                        <option value="stop sign">Дорожный знак</option>
+                    </select>
+                </label>
+                <label class="select_label">
+                    Результат
+                    <select multiple id="maps-item-select-result-1" class="mt-2">
+                        <option value="address">Адрес</option>
+                        <option value="coordinates">Координаты</option>
+                        <option value="color">Цвет</option>
+                    </select>
+                </label>
+                <button id="add-maps-select" type="button" class="btn btn-primary pink-button"> Добавить + </button>
+            </div>
+            <div id="osm-select-1" class="select_group">
+                <label class="select_label">
+                    Дополнительный объекты
+                    <select id="osm-item-select-1" class="mt-2">
+                        <option value="cafe=amenity">Кафе</option>
+                        <option value="restaurant=amenity">Ресторан</option>
+                        <option value="college=amenity">Колледж</option>
+                        <option value="traffic_park=amenity">Парковка</option>
+                        <option value="university=amenity">Университет</option>
+                        <option value="bus_station=amenity">Автобусная остановка</option>
+                        <option value="cinema=amenity">Кинотеатр</option>
+                        <option value="house=building">Дом</option>
+                        <option value="apartments=building">Квартира</option>
+                        <option value="hotel=building">Отель</option>
+                    </select>
+                </label>
+                <label class="select_label">
+                    Результат
+                    <select multiple id="osm-item-select-result-1" class="mt-2">
+                        <option value="address">Адрес</option>
+                        <option value="coordinates">Координаты</option>
+                        <option value="name">Наименование</option>
+                        <option value="address">Количество</option>
+                    </select>
+                </label>
+                <button id="add-osm-select" type="button" class="btn btn-primary pink-button"> Добавить + </button>
+            </div>
             <br />
 {#            <button type="submit" class="btn btn-primary pink-button">Record Video</button>#}
-            <button type="button" id="get_osm_data" class="btn btn-primary pink-button">Get data</button>
+            <div id="osm-loader" class="lds-ring"><div></div><div></div><div></div><div></div></div>
+            <button type="button" id="get_osm_data" class="btn btn-primary pink-button mb-4">
+                Get data
+            </button>
         </form>
-        <div id="data-loader" class="lds-ring"><div></div><div></div><div></div><div></div></div>
-         <form action="">
-            {% csrf_token %}
-            <button type="button" id="get-result" class="btn btn-primary pink-button">Get cars count</button>
-        </form>
-        <div id="counting-loader" class="lds-ring"><div></div><div></div><div></div><div></div></div>
-        <form action="">
-            {% csrf_token %}
-            <button type="button" id="record-video" class="btn btn-primary pink-button">Record Video</button>
-        </form>
-        <div id="osm-loader" class="lds-ring"><div></div><div></div><div></div><div></div></div>
+{#        <div id="data-loader" class="lds-ring"><div></div><div></div><div></div><div></div></div>#}
+{#         <form action="">#}
+{#            {% csrf_token %}#}
+{#            <button type="button" id="get-result" class="btn btn-primary pink-button">Get cars count</button>#}
+{#        </form>#}
+{#        <div id="counting-loader" class="lds-ring"><div></div><div></div><div></div><div></div></div>#}
+{#        <form action="">#}
+{#            {% csrf_token %}#}
+{#            <button type="button" id="record-video" class="btn btn-primary pink-button">Record Video</button>#}
+{#        </form>#}
     </div>
+
     <div id="success-upload" class="result">Video uploaded successfully!</div>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
-	<script src="https://api-maps.yandex.ru/2.1/?apikey=fe94c607-ccc3-4d84-a017-3082f44c2512&lang=ru_RU">
-	</script>
-        {% load static %}
+
+    {% load static %}
     <script>
+        $('select').selectpicker();
 
         const $crf_token = $('[name="csrfmiddlewaretoken"]').attr('value');
         const sendAjaxQuery = (url, loader, button, text, hide) => {
@@ -109,6 +149,75 @@
 
         $("#get_osm_data").click(() => {
             sendAjaxQuery("get_osm_data", "#osm-loader", "#get_osm_data", undefined, "#success-upload")
+        });
+
+        let osm_select_index = 1
+        $("#add-osm-select").click(() => {
+            const child = `
+                <div id="osm-select-${osm_select_index + 1}" class="select_group mt-4">
+                    <label class="select_label">
+                        Дополнительный объекты
+                        <select id="osm-item-select-${osm_select_index + 1}" class="mt-2">
+                            <option value="cafe=amenity">Кафе</option>
+                            <option value="restaurant=amenity">Ресторан</option>
+                            <option value="college=amenity">Колледж</option>
+                            <option value="traffic_park=amenity">Парковка</option>
+                            <option value="university=amenity">Университет</option>
+                            <option value="bus_station=amenity">Автобусная остановка</option>
+                            <option value="cinema=amenity">Кинотеатр</option>
+                            <option value="house=building">Дом</option>
+                            <option value="apartments=building">Квартира</option>
+                            <option value="hotel=building">Отель</option>
+                        </select>
+                    </label>
+                    <label class="select_label">
+                        Результат
+                        <select multiple id="osm-item-select-result-${osm_select_index + 1}" class="mt-2">
+                            <option value="address">Адрес</option>
+                            <option value="coordinates">Координаты</option>
+                            <option value="name">Наименование</option>
+                            <option value="address">Количество</option>
+                        </select>
+                    </label>
+                </div>
+            `
+            $(`#osm-select-${osm_select_index}`).after(child)
+            osm_select_index += 1
+            $('select').selectpicker();
+        });
+
+         let maps_select_index = 1
+        $("#add-maps-select").click(() => {
+            const child = `
+                <div id="maps-select-${maps_select_index + 1}" class="select_group mb-4">
+                   <label class="select_label">
+                        Объекты с панорам
+                        <select id="maps-item-select-${maps_select_index + 1}" class="mt-2">
+                            <option value="person">Человек</option>
+                            <option value="car">Машина</option>
+                            <option value="bicycle">Велосипед</option>
+                            <option value="motorbike">Мотоциклы</option>
+                            <option value="bus">Автобус</option>
+                            <option value="train">Поезд</option>
+                            <option value="cat">Кошка</option>
+                            <option value="dog">Собака</option>
+                            <option value="boat">Лодка</option>
+                            <option value="traffic light">Светофор</option>
+                            <option value="stop sign">Дорожный знак</option>
+                        </select>
+                    </label>
+                    <label class="select_label">
+                        Результат
+                        <select multiple id="maps-item-select-result-${maps_select_index + 1}" class="mt-2">
+                            <option value="address">Адрес</option>
+                            <option value="coordinates">Координаты</option>
+                        </select>
+                    </label>
+                </div>
+            `
+            $(`#maps-select-${maps_select_index}`).after(child)
+            maps_select_index += 1
+            $('select').selectpicker();
         });
     </script>
 
