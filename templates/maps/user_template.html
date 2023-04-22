@@ -4,47 +4,46 @@
     <meta charset="UTF-8" />
     <title>Street datasets</title>
 
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0"
-      crossorigin="anonymous"
-    />
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&display=swap" rel="stylesheet">
+
+    <!--jquery-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <!-- BS5.1.1 CSS/JS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Latest BS-Select compiled and minified CSS/JS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta2/dist/css/bootstrap-select.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta2/dist/js/bootstrap-select.min.js"></script>
 
       <style>
         [class*="copyrights-pane"] {
             display: none !important;
         }
 
-        html, body, .player {
+        html, body {
             width: 100%;
             height: 100%;
             margin: 0;
             padding: 0;
         }
 
-        .player {
-            width: 1200px;
-            height: 80%;
-        }
-
         .buttons-wrapper {
             display: flex;
-            column-gap: 1rem;
             margin-top: 1rem;
-            margin-left: 1rem;
-            align-items: end;
+            align-items: center;
+            justify-content: center;
         }
 
         .lds-ring {
-            display: inline-block;
+            display: flex;
             position: relative;
-            width: 58px;
             height: 58px;
+            width: 100%;
+            justify-content: center;
             display: none
         }
         .lds-ring div {
@@ -54,10 +53,10 @@
             width: 48px;
             height: 48px;
             margin: 6px;
-            border: 6px solid #1e7ffd;
+            border: 6px solid #6BA586;
             border-radius: 50%;
             animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-            border-color: #1e7ffd transparent transparent transparent;
+            border-color: #6BA586 transparent transparent transparent;
         }
         .lds-ring div:nth-child(1) {
             animation-delay: -0.45s;
@@ -86,19 +85,56 @@
         .addressForm {
             display: flex;
             flex-direction: column;
+            max-width: 59rem;
+            border: 1px solid #6BA586;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
         }
         .header {
             padding: 0.5rem 1rem;
+            background: #c1dacf;
         }
 
         .pink-button {
-            background: #eb5369;
+            background: #6BA586;
             border: none;
+            height: fit-content;
+            box-shadow: none !important;
+        }
+
+        .pink-button:focus {
+            background: #6BA586;
+            box-shadow: none;
+        }
+
+        .pink-button:hover {
+            background: #6BA586;
+            box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px !important;
+        }
+
+        .pink-button:active {
+            box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px !important;
+        }
+
+        .pink-button:visited {
+          box-shadow: none;
+        }
+
+        .select_group {
+            display: flex;
+            column-gap: 1rem;
+            align-items: end;
+        }
+
+        .select_label {
+            display: flex;
+            flex-direction: column;
         }
     </style>
   </head>
   <body>
-    <nav class="navbar header navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light header">
       <a class="navbar-brand" href="#">STREET INFORMATION</a>
     </nav>
     {% block body %}
