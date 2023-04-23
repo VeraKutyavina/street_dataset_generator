@@ -122,12 +122,9 @@
                 complete: () => {
                     $(loader).hide();
                     $(button).show();
-                    $(text).show();
-                    $(hide).hide();
                 },
-                success: (resp) => {
-                    console.log(resp.count)
-                    if (!text) $('#buttons').after("<a href=\"/maps/download\">Скачать файл</a>")
+                success: () => {
+                    $('#buttons').after("<a href=\"/maps/download\">Скачать файл</a>")
                 }
              })
         }
