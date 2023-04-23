@@ -48,7 +48,7 @@
                 </label>
                 <label class="select_label">
                     Результат
-                    <select name="maps-object-properties-1" multiple id="maps-item-select-result-1" class="mt-2">
+                    <select name="maps-object-1-properties" multiple id="maps-item-select-result-1" class="mt-2">
                         <option value="address">Адрес</option>
                         <option value="coordinates">Координаты</option>
                         <option value="color">Цвет</option>
@@ -74,7 +74,7 @@
                 </label>
                 <label class="select_label">
                     Результат
-                    <select name="osm-object-properties-1" multiple id="osm-item-select-result-1" class="mt-2">
+                    <select name="osm-object-1-properties" multiple id="osm-item-select-result-1" class="mt-2">
                         <option value="address">Адрес</option>
                         <option value="coordinates">Координаты</option>
                         <option value="name">Наименование</option>
@@ -84,9 +84,8 @@
                 <button id="add-osm-select" type="button" class="btn btn-primary pink-button"> Добавить + </button>
             </div>
             <br />
-{#            <button type="submit" class="btn btn-primary pink-button">Record Video</button>#}
             <div id="osm-loader" class="lds-ring"><div></div><div></div><div></div><div></div></div>
-            <button type="button" id="get_osm_data" class="btn btn-primary pink-button mb-4">
+            <button type="button" id="get-data" class="btn btn-primary pink-button mb-4">
                 Get data
             </button>
         </form>
@@ -99,50 +98,42 @@
         $('select').selectpicker();
 
         const $crf_token = $('[name="csrfmiddlewaretoken"]').attr('value');
-        const sendAjaxQuery = (url, loader, button, text, hide) => {
+        const sendAjaxQuery = (url, loader, button) => {
             $(loader).show();
             $(button).hide();
 
             const formParams = $('#PropertiesForm').serializeArray();
-            console.log(formParams)
+            const preparedData  = formParams.reduce((accum, item) => {
+                if (Object.keys(accum).includes(item.name)) {
+                    return { ...accum, [item.name]: item.value + ', ' + accum[item.name] }
+                }
+                return { ...accum, [item.name]: item.value }
+            }, 0);
 
-            {#$.ajax({#}
-            {#    url: url,#}
-            {#    type: "POST",#}
-            {#    data : {#}
-            {#        north: $("#north-input").val(),#}
-            {#        south: $("#south-input").val(),#}
-            {#        east: $("#east-input").val(),#}
-            {#        west: $("#west-input").val(),#}
-            {#        address: $("#address-input").val(),#}
-            {#        osm_item: $("#item-select").val(),#}
-            {#        csrfmiddlewaretoken: $crf_token,#}
-            {#    },#}
-            {#    headers:{"X-CSRFToken": $crf_token},#}
-            {#    error: (e) => console.log(e),#}
-            {#    complete: () => {#}
-            {#        $(loader).hide();#}
-            {#        $(button).show();#}
-            {#        $(text).show();#}
-            {#        $(hide).hide();#}
-            {#    },#}
-            {#    success: (resp) => {#}
-            {#        console.log(resp.count)#}
-            {#        if (!text) $('#buttons').after("<a href=\"/maps/download\">Скачать файл</a>")#}
-            {#    }#}
-            {#})#}
+            $.ajax({
+                url: url,
+                type: "POST",
+                data : {
+                    ...preparedData,
+                    csrfmiddlewaretoken: $crf_token,
+                },
+                headers:{"X-CSRFToken": $crf_token},
+                error: (e) => console.log(e),
+                complete: () => {
+                    $(loader).hide();
+                    $(button).show();
+                    $(text).show();
+                    $(hide).hide();
+                },
+                success: (resp) => {
+                    console.log(resp.count)
+                    if (!text) $('#buttons').after("<a href=\"/maps/download\">Скачать файл</a>")
+                }
+             })
         }
 
-        $("#record-video").click(() => {
-            sendAjaxQuery("create_video", '#data-loader', "#record-video", "#success-upload")
-        });
-
-        $("#get-result").click(() => {
-            sendAjaxQuery("counting", "#counting-loader", "#get-result", undefined, "#success-upload")
-        });
-
-        $("#get_osm_data").click(() => {
-            sendAjaxQuery("get_osm_data", "#osm-loader", "#get_osm_data", undefined, "#success-upload")
+         $("#get-data").click(() => {
+            sendAjaxQuery("create_video", "#osm-loader", "#get-data")
         });
 
         let osm_select_index = 1
@@ -166,7 +157,7 @@
                     </label>
                     <label class="select_label">
                         Результат
-                        <select name="osm-object-properties-${osm_select_index + 1}" multiple id="osm-item-select-result-${osm_select_index + 1}" class="mt-2">
+                        <select name="osm-object-${osm_select_index + 1}-properties" multiple id="osm-item-select-result-${osm_select_index + 1}" class="mt-2">
                             <option value="address">Адрес</option>
                             <option value="coordinates">Координаты</option>
                             <option value="name">Наименование</option>
@@ -202,7 +193,7 @@
                     </label>
                     <label class="select_label">
                         Результат
-                        <select name="maps-object-properties-${maps_select_index + 1}" multiple id="maps-item-select-result-${maps_select_index + 1}" class="mt-2">
+                        <select name="maps-object-${maps_select_index + 1}-properties" multiple id="maps-item-select-result-${maps_select_index + 1}" class="mt-2">
                             <option value="address">Адрес</option>
                             <option value="coordinates">Координаты</option>
                         </select>
