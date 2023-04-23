@@ -120,14 +120,17 @@ def start_image_object_detection(img_path, classes_to_look_for):
         pass
 
 
-def detect_objects():
+def detect_objects(objects_dict):
     # images_folder = glob.glob("video-images-opencv/*.png")
+    list_look_for = []
+    for key in objects_dict.keys():
+        list_look_for.append(key)
+
+    print(list_look_for)
 
     image = "video-images-opencv/Пушкина/image0.png"
-    look_for = "person,car"
 
     # Delete spaces
-    list_look_for = look_for.split(',')
     classes_to_look_for = list_look_for
 
     start_image_object_detection(image, classes_to_look_for)

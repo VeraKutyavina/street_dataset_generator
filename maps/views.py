@@ -2,13 +2,12 @@ import json
 import os
 import time
 
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse
 from django.shortcuts import render
 from django.template import loader
 
 from maps.forms import CreateDatasetForm
-from maps.healpers import collect_screenshots, collect_osm_data
-from maps.services.MLService import detect_objects
+from maps.healpers import collect_screenshots
 
 SAVING_FRAMES_PER_SECOND = 1
 
@@ -47,14 +46,13 @@ def create_video_view(request):
 
 
 def counting_view(request):
-    detect_objects()
     dict = {'count': 0}
     return HttpResponse(json.dumps(dict), content_type='application/json')
 
 
 def get_osm_data(request):
-    if request.method == 'POST':
-        collect_osm_data(request)
+    # if request.method == 'POST':
+    #     collect_osm_data(request)
     return render(request, 'maps/index.html', {})
 
 
