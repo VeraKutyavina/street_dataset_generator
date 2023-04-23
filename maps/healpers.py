@@ -3,6 +3,9 @@ from maps.services.OSMService import get_city_name, get_street_in_place, get_str
 from maps.services.VideoServices import create_map_video
 from maps.services.YandexService import get_coord_by_address
 
+MAPS_OBJECT = 'maps-object-'
+OSM_OBJECT = 'osm-object-'
+
 
 def collect_screenshots(request):
     north = request.POST['north']
@@ -11,17 +14,26 @@ def collect_screenshots(request):
     west = request.POST['west']
     address = request.POST['address']
 
+    result_objects = {}
+
     print(request.POST)
 
-    # if bool(address):
-    #     create_map_video(address)
-    # elif bool(north) and bool(south) and bool(east) and bool(west):
-    #     city = get_city_name(north, south, east, west)
-    #     streets = get_street_in_place(north, south, east, west)
-    #
-    #     for street in streets:
-    #         full_address = city + ', ' + street
-    #         create_map_video(full_address)
+    for key in request.POST.keys():
+        if MAPS_OBJECT in key or OSM_OBJECT in key:
+            for child_key in request.POST.keys():
+                if key in child_key and key != child_key:
+                    result_objects[request.POST[key]] = request.POST[child_key]
+        print(result_objects)
+
+    if bool(address):
+        create_map_video(address)
+    elif bool(north) and bool(south) and bool(east) and bool(west):
+        city = get_city_name(north, south, east, west)
+        streets = get_street_in_place(north, south, east, west)
+
+        for street in streets:
+            full_address = city + ', ' + street
+            create_map_video(full_address)
 
 
 def collect_osm_data(request):
