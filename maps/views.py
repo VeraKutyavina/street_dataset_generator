@@ -7,7 +7,7 @@ from django.shortcuts import render
 from django.template import loader
 
 from maps.forms import CreateDatasetForm
-from maps.healpers import collect_screenshots, collect_osm_data
+from maps.healpers import collect_screenshots
 from maps.services.MLService import detect_objects
 
 SAVING_FRAMES_PER_SECOND = 1
@@ -53,8 +53,8 @@ def counting_view(request):
 
 
 def get_osm_data(request):
-    if request.method == 'POST':
-        collect_osm_data(request)
+    # if request.method == 'POST':
+    #     collect_osm_data(request)
     return render(request, 'maps/index.html', {})
 
 

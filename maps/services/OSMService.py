@@ -67,24 +67,27 @@ def get_city_name(north, south, east, west):
 
 
 def get_street_data(city_name, street_name, osm_item):
-    tag_parts = osm_item.split('=')
-    tag = {tag_parts[1]: tag_parts[0]}
-    cafes = ox.geometries_from_place(city_name, tag)
+    tags = {}
+    for key in osm_item.keys():
+        tag_parts = key.split('=')
+        tags[tag_parts[1]] = tag_parts[0]
+
+    data = ox.geometries_from_place(city_name, tags)
 
     coordinates = []
-    cafes_dict = {}
-    for index, row in cafes.iterrows():
+    data_dict = {}
+    for index, row in data.iterrows():
         if type(row['geometry']) == shapely.geometry.point.Point:
             current_coordinates = (row['geometry'].y, row['geometry'].x)
             coordinates.append(current_coordinates)
-            cafes_dict[current_coordinates] = row['name']
+            data_dict[current_coordinates] = row['name']
 
     address_coordinates_dict = get_addresses(coordinates)
 
     result = {}
-    for key in cafes_dict.keys():
+    for key in data_dict.keys():
         if street_name.lower() in address_coordinates_dict[key].lower():
-            result[cafes_dict[key]] = address_coordinates_dict[key]
+            result[data_dict[key]] = address_coordinates_dict[key]
 
     f = open('data.txt', 'w+')
     for key in result.keys():
@@ -93,4 +96,4 @@ def get_street_data(city_name, street_name, osm_item):
 
     f.close()
 
-    print("Количество кафе ", len(result))
+    print("Количество объектоы ", len(data))
