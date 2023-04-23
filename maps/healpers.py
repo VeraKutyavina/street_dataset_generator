@@ -1,7 +1,8 @@
-from maps.services.DadataService import get_street_by_coord, get_city_by_coord
-from maps.services.OSMService import get_city_name, get_street_in_place, get_street_data
+from maps.services.MLService import detect_objects
 from maps.services.VideoServices import create_map_video
 from maps.services.YandexService import get_coord_by_address
+from maps.services.DadataService import get_street_by_coord, get_city_by_coord
+from maps.services.OSMService import get_city_name, get_street_in_place, get_street_data
 
 MAPS_OBJECT = 'maps-object-'
 OSM_OBJECT = 'osm-object-'
@@ -29,13 +30,11 @@ def collect_screenshots(request):
             for child_key in request.POST.keys():
                 if key in child_key and key != child_key:
                     result_objects_osm[request.POST[key]] = request.POST[child_key]
-        print(result_objects_osm)
-        print(result_objects_map)
 
     # collect screenshots and collect osm data
     if bool(address):
         # screens
-        # create_map_video(address)
+        create_map_video(address)
 
         # osm
         coordinates = get_coord_by_address(address)
@@ -55,4 +54,6 @@ def collect_screenshots(request):
         # osm
         for street in streets:
             get_street_data(city, street, result_objects_osm)
+
+    detect_objects(result_objects_map)
 
