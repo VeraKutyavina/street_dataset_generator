@@ -61,3 +61,5 @@ dnn_model
 cache
 data.txt
 resources
+
+box_*

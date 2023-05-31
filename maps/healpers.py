@@ -19,6 +19,8 @@ def collect_screenshots(request):
     result_objects_osm = {}
     result_objects_map = {}
 
+    screens_addresses_dict = {}
+
     # prepare objects and properties
     for key in request.POST.keys():
         if MAPS_OBJECT in key:
@@ -34,7 +36,7 @@ def collect_screenshots(request):
     # collect screenshots and collect osm data
     if bool(address):
         # screens
-        create_map_video(address)
+        create_map_video(address, screens_addresses_dict)
 
         # osm
         coordinates = get_coord_by_address(address)

@@ -23,7 +23,7 @@ def convert_webm_to_mp4():
     subprocess.run(command, shell=True)
 
 
-def record_video_with_playwright(coordinates, address, heading):
+def record_video_with_playwright(coordinates, street, heading, screens_addresses_dict):
     i = 0
     url = MAPS_URL + '?x=' + str(coordinates[1]) + '&y=' + str(coordinates[0]) + '&heading=' + str(heading)
     with sync_playwright() as p:
@@ -32,10 +32,10 @@ def record_video_with_playwright(coordinates, address, heading):
         page = context.new_page()
         page.goto(url)
         page.wait_for_timeout(1000)
-        current_address = [address]
+        current_address = [street]
         current_x = '1'
         current_y = '1'
-        while any(address in addr for addr in current_address):
+        while any(street in addr for addr in current_address):
             page.keyboard.press('ArrowUp')
             page.keyboard.press('ArrowUp')
 
@@ -52,8 +52,12 @@ def record_video_with_playwright(coordinates, address, heading):
 
             if not x == '' and not y == '':
                 current_address = get_address_by_coord(x, y)
-                print(current_address)
-            page.screenshot(path='video-images-opencv/' + address + '/image' + str(i) + '.png')
+                # print(current_address)
+
+            path_name = 'video-images-opencv/' + street + '/image' + str(i) + '.png'
+            screens_addresses_dict[path_name] = current_address[0]
+
+            page.screenshot(path=path_name)
             i += 1
             page.wait_for_timeout(500)
         browser.close()
@@ -65,9 +69,8 @@ def record_video_with_playwright(coordinates, address, heading):
         page = context.new_page()
         page.goto(url)
         page.wait_for_timeout(1000)
-        current_address = [address]
-        print(address, "STREEt")
-        while any(address in addr for addr in current_address):
+        current_address = [street]
+        while any(street in addr for addr in current_address):
             page.keyboard.press('ArrowDown')
             page.keyboard.press('ArrowDown')
 
@@ -84,21 +87,21 @@ def record_video_with_playwright(coordinates, address, heading):
             if not x == '' and not y == '':
                 current_address = get_address_by_coord(x, y)
                 print(current_address)
-            page.screenshot(path='video-images-opencv/' + address + '/image' + str(i) + '.png')
+
+            path_name = 'video-images-opencv/' + street + '/image' + str(i) + '.png'
+            page.screenshot(path=path_name)
+            screens_addresses_dict[path_name] = current_address[0]
             i += 1
             page.wait_for_timeout(500)
         browser.close()
         context.close()
 
 
-def create_map_video(address):
+def create_map_video(address, screens_addresses_dict):
     print(address)
     coordinates = get_coord_by_address(address)
     street = get_street_by_coord(coordinates[1], coordinates[0])
     points = get_random_points(address)
     heading = get_heading_param(points[0], points[1])
 
-    record_video_with_playwright(coordinates, street, heading)
-    # convert_webm_to_mp4()
-
-
+    record_video_with_playwright(coordinates, street, heading, screens_addresses_dict)
