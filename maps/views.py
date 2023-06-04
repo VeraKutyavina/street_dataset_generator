@@ -57,7 +57,7 @@ def get_osm_data(request):
 
 
 def download_file(request):
-    file_path = 'data.txt'
+    file_path = 'data.json'
     with open(file_path, 'rb') as fh:
         response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
         response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)

@@ -66,34 +66,32 @@ def get_city_name(north, south, east, west):
     return city_name
 
 
-def get_street_data(city_name, street_name, osm_item):
+def get_street_data(city_name, street_name, osm_item, final_data):
     tags = {}
     for key in osm_item.keys():
         tag_parts = key.split('=')
-        tags[tag_parts[1]] = tag_parts[0]
+        tags = {tag_parts[1]: tag_parts[0]}
+        final_data[street_name][tag_parts[0]] = []
 
-    data = ox.geometries_from_place(city_name, tags)
+        data = ox.geometries_from_place(city_name, tags)
 
-    coordinates = []
-    data_dict = {}
-    for index, row in data.iterrows():
-        if type(row['geometry']) == shapely.geometry.point.Point:
-            current_coordinates = (row['geometry'].y, row['geometry'].x)
-            coordinates.append(current_coordinates)
-            data_dict[current_coordinates] = row['name']
+        coordinates = []
+        data_dict = {}
+        for index, row in data.iterrows():
+            if type(row['geometry']) == shapely.geometry.point.Point:
+                current_coordinates = (row['geometry'].y, row['geometry'].x)
+                coordinates.append(current_coordinates)
+                data_dict[current_coordinates] = row['name']
 
-    address_coordinates_dict = get_addresses(coordinates)
+        address_coordinates_dict = get_addresses(coordinates)
 
-    result = {}
-    for key in data_dict.keys():
-        if street_name.lower() in address_coordinates_dict[key].lower():
-            result[data_dict[key]] = address_coordinates_dict[key]
-
-    f = open('data.txt', 'w+')
-    for key in result.keys():
-        f.write(str(key) + ': ' + str(result[key]))
-        f.write('\n')
-
-    f.close()
-
-    print("Количество объектоы ", len(data))
+        result = {}
+        for key in data_dict.keys():
+            if street_name.lower() in address_coordinates_dict[key].lower():
+                result[data_dict[key]] = address_coordinates_dict[key]
+                current_obj = {
+                    "address": address_coordinates_dict[key],
+                    "coordinates": key,
+                    "name": data_dict[key],
+                }
+                final_data[street_name][tag_parts[0]].append(current_obj)
