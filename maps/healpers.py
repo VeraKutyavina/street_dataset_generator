@@ -19,7 +19,10 @@ def collect_screenshots(request):
     result_objects_osm = {}
     result_objects_map = {}
 
-    screens_addresses_dict = {}
+    screens_addresses_dict = {'video-images-opencv/Пряженникова/image0.png': 'Пряженникова', 'video-images-opencv/Пряженникова/image1.png': 'Удмуртская Респ, г Глазов, ул Пряженникова, д 49/21', 'video-images-opencv/Пряженникова/image2.png': 'Удмуртская Респ, г Глазов, ул Пряженникова, д 51', 'video-images-opencv/Пряженникова/image3.png': 'Удмуртская Респ, г Глазов, ул Пряженникова, д 53/22', 'video-images-opencv/Пряженникова/image4.png': 'Удмуртская Респ, г Глазов, ул Пряженникова, д 53/22', 'video-images-opencv/Пряженникова/image5.png': 'Удмуртская Респ, г Глазов, ул Пряженникова, д 55/19', 'video-images-opencv/Пряженникова/image6.png': 'Пряженникова:, ', 'video-images-opencv/Пряженникова/image7.png': 'Удмуртская Респ, г Глазов, ул Пряженникова, д 49/21:58.13758299999783, 52.64627599999999'}
+    # screens_addresses_dict = {}
+
+    final_data = {}
 
     # prepare objects and properties
     for key in request.POST.keys():
@@ -34,6 +37,7 @@ def collect_screenshots(request):
                     result_objects_osm[request.POST[key]] = request.POST[child_key]
 
     # collect screenshots and collect osm data
+
     if bool(address):
         # screens
         create_map_video(address, screens_addresses_dict)
@@ -41,9 +45,12 @@ def collect_screenshots(request):
         # osm
         coordinates = get_coord_by_address(address)
         street = get_street_by_coord(coordinates[1], coordinates[0])
-        city = get_city_by_coord(coordinates[1], coordinates[0])
+        # city = get_city_by_coord(coordinates[1], coordinates[0])
 
-        get_street_data(city, street, result_objects_osm)
+        # get_street_data(city, street, result_objects_osm)
+        final_data[street] = {}
+        print(screens_addresses_dict)
+        detect_objects(result_objects_map, street, screens_addresses_dict, final_data)
     elif bool(north) and bool(south) and bool(east) and bool(west):
         city = get_city_name(north, south, east, west)
         streets = get_street_in_place(north, south, east, west)
@@ -57,5 +64,8 @@ def collect_screenshots(request):
         for street in streets:
             get_street_data(city, street, result_objects_osm)
 
-    detect_objects(result_objects_map)
+        # detect objects
+        for street in streets:
+            detect_objects(result_objects_map, street, screens_addresses_dict)
+
 

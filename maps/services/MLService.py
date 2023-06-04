@@ -20,7 +20,7 @@ def save_img(box, image_to_process, i):
     i += 1
 
 
-def detect_colors(img, boxes):
+def detect_colors(img, box):
     # преобразование в цветовое пространство HSV
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
@@ -32,22 +32,22 @@ def detect_colors(img, boxes):
     mask_black = cv2.inRange(hsv, lower_green, upper_green)
 
     # находим цвет
-    for contour in boxes:
-        x, y, w, h = contour
+    x, y, w, h = box
 
-        blue_score = cv2.mean(mask_blue[y:y + h, x:x + w])[0]
-        white_score = cv2.mean(mask_white[y:y + h, x:x + w])[0]
-        black_score = cv2.mean(mask_black[y:y + h, x:x + w])[0]
-        red_score = cv2.mean(mask_red[y:y + h, x:x + w])[0]
-        green_score = cv2.mean(mask_green[y:y + h, x:x + w])[0]
+    blue_score = cv2.mean(mask_blue[y:y + h, x:x + w])[0]
+    white_score = cv2.mean(mask_white[y:y + h, x:x + w])[0]
+    black_score = cv2.mean(mask_black[y:y + h, x:x + w])[0]
+    red_score = cv2.mean(mask_red[y:y + h, x:x + w])[0]
+    green_score = cv2.mean(mask_green[y:y + h, x:x + w])[0]
 
-        scores = {'blue': blue_score, 'white': white_score, 'black': black_score, 'red': red_score, 'green': green_score}
-        color = max(scores, key=scores.get)
+    scores = {'blue': blue_score, 'white': white_score, 'black': black_score, 'red': red_score, 'green': green_score}
+    color = max(scores, key=scores.get)
 
-        print(color)
+    print(color)
+    return color
 
 
-def apply_yolo_object_detection(image_to_process, net, classes_to_look_for):
+def apply_yolo_object_detection(image_to_process, net, classes_to_look_for, final_data, street, address):
     layer_names = net.getLayerNames()
     out_layers_indexes = net.getUnconnectedOutLayers()
     out_layers = [layer_names[index - 1] for index in out_layers_indexes]
@@ -82,10 +82,10 @@ def apply_yolo_object_detection(image_to_process, net, classes_to_look_for):
     # Selection
     chosen_boxes = cv2.dnn.NMSBoxes(boxes, class_scores, 0.0, 0.4)
 
-    i = 0
-    for box in chosen_boxes:
-        save_img(boxes[box], image_to_process, i)
-        i += 1
+    # i = 0
+    # for box in chosen_boxes:
+    #     save_img(boxes[box], image_to_process, i)
+    #     i += 1
 
     result = {}
     cars_boxes = []
@@ -99,28 +99,29 @@ def apply_yolo_object_detection(image_to_process, net, classes_to_look_for):
         current_class = classes[class_index]
         if current_class in classes_to_look_for:
             result[current_class] += 1
-
-        if current_class == 'car':
-            cars_boxes.append(boxes[box_index])
+            current_obj = {
+                "address": address,
+                "color": detect_colors(image_to_process, boxes[box_index]),
+            }
+            final_data[street][look_class].append(current_obj)
 
     print(result)
 
-    detect_colors(image_to_process, cars_boxes)
     return ''
 
 
-def start_image_object_detection(img_path, classes_to_look_for):
+def start_image_object_detection(img_path, classes_to_look_for, final_data, street, address):
     net = cv2.dnn.readNetFromDarknet("Resources/yolov4-tiny.cfg",
                                      "Resources/yolov4-tiny.weights")
     try:
         image = cv2.imread(img_path)
-        apply_yolo_object_detection(image, net, classes_to_look_for)
+        apply_yolo_object_detection(image, net, classes_to_look_for, final_data, street, address)
 
     except KeyboardInterrupt:
         pass
 
 
-def detect_objects(objects_dict):
+def detect_objects(objects_dict, street, screens_addresses_dict, final_data):
     # images_folder = glob.glob("video-images-opencv/*.png")
     list_look_for = []
     for key in objects_dict.keys():
@@ -128,9 +129,16 @@ def detect_objects(objects_dict):
 
     print(list_look_for)
 
-    image = "video-images-opencv/Пушкина/image0.png"
-
     # Delete spaces
     classes_to_look_for = list_look_for
 
-    start_image_object_detection(image, classes_to_look_for)
+    for look_class in classes_to_look_for:
+        final_data[street][look_class] = []
+
+    for key in screens_addresses_dict.keys():
+        address = screens_addresses_dict[key]
+        print(address, street)
+        if street in key:
+            start_image_object_detection(key, classes_to_look_for, final_data, street, address)
+
+    print(final_data)

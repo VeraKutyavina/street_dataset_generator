@@ -90,7 +90,7 @@ def record_video_with_playwright(coordinates, street, heading, screens_addresses
 
             path_name = 'video-images-opencv/' + street + '/image' + str(i) + '.png'
             page.screenshot(path=path_name)
-            screens_addresses_dict[path_name] = current_address[0]
+            screens_addresses_dict[path_name] = current_address[0] + ":" + x + ", " + y
             i += 1
             page.wait_for_timeout(500)
         browser.close()
