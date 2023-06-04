@@ -99,11 +99,14 @@ def apply_yolo_object_detection(image_to_process, net, classes_to_look_for, fina
         current_class = classes[class_index]
         if current_class in classes_to_look_for:
             result[current_class] += 1
-            current_obj = {
-                "address": address,
-                "color": detect_colors(image_to_process, boxes[box_index]),
-            }
-            final_data[street][look_class].append(current_obj)
+            splited_address = address.split(":")
+            if len(splited_address) > 1:
+                current_obj = {
+                    "address": splited_address[0],
+                    "coordinates": splited_address[1],
+                    "color": detect_colors(image_to_process, boxes[box_index]),
+                }
+                final_data[street][look_class].append(current_obj)
 
     print(result)
 
