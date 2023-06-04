@@ -59,11 +59,11 @@ def record_video_with_playwright(coordinates, street, heading, screens_addresses
                 # print(current_address)
 
             path_name = 'video-images-opencv/' + street + '/image' + str(i) + '.png'
+            page.wait_for_timeout(800)
             screens_addresses_dict[path_name] = current_address[0]
 
             page.screenshot(path=path_name)
             i += 1
-            page.wait_for_timeout(500)
             k += 1
             if k == 10:
                 points.append([float(x), float(y)])
