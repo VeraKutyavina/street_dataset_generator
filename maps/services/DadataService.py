@@ -14,17 +14,3 @@ def get_address_by_coord(x, y):
     addresses_array = list(map(get_address, result))
     print(addresses_array)
     return addresses_array
-
-
-def get_street_by_coord(x, y):
-    print(x, y)
-    dadata = Dadata(token)
-    result = dadata.geolocate(name="address", lat=float(x), lon=float(y))
-    return result[0]['data']['street']
-
-
-def get_city_by_coord(x, y):
-    print(x, y)
-    dadata = Dadata(token)
-    result = dadata.geolocate(name="address", lat=float(x), lon=float(y))
-    return result[0]['data']['city']

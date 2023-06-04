@@ -5,8 +5,9 @@ import glob
 from playwright.sync_api import sync_playwright
 
 from maps.services.AddreessService import get_heading_param
-from maps.services.DadataService import get_address_by_coord, get_street_by_coord
+from maps.services.DadataService import get_address_by_coord
 from maps.services.OSMService import get_random_points
+from maps.services.TomTomService import get_street_name
 from maps.services.YandexService import get_coord_by_address
 
 MAPS_URL = 'http://127.0.0.1:8000/maps/'
@@ -105,9 +106,8 @@ def record_video_with_playwright(coordinates, street, heading, screens_addresses
 
 
 def create_map_video(address, screens_addresses_dict, points_new):
-    print(address)
     coordinates = get_coord_by_address(address)
-    street = get_street_by_coord(coordinates[1], coordinates[0])
+    street = get_street_name(coordinates[1], coordinates[0])
     points = get_random_points(address)
     heading = get_heading_param(points[0], points[1])
 
