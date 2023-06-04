@@ -1,3 +1,5 @@
+import json
+
 from maps.services.MLService import detect_objects
 from maps.services.VideoServices import create_map_video
 from maps.services.YandexService import get_coord_by_address
@@ -42,15 +44,15 @@ def collect_screenshots(request):
         # screens
         # create_map_video(address, screens_addresses_dict)
 
-        # osm
         coordinates = get_coord_by_address(address)
         street = get_street_by_coord(coordinates[1], coordinates[0])
-        # city = get_city_by_coord(coordinates[1], coordinates[0])
+        city = get_city_by_coord(coordinates[1], coordinates[0])
 
-        # get_street_data(city, street, result_objects_osm)
         final_data[street] = {}
-        print(screens_addresses_dict)
         detect_objects(result_objects_map, street, screens_addresses_dict, final_data)
+
+        # osm
+        get_street_data(city, street, result_objects_osm, final_data)
     elif bool(north) and bool(south) and bool(east) and bool(west):
         city = get_city_name(north, south, east, west)
         streets = get_street_in_place(north, south, east, west)
@@ -68,4 +70,5 @@ def collect_screenshots(request):
         for street in streets:
             detect_objects(result_objects_map, street, screens_addresses_dict)
 
-
+    with open("data.json", "w") as json_file:
+        json.dump(final_data, json_file, ensure_ascii=False)

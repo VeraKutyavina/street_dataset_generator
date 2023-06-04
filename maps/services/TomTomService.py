@@ -26,7 +26,6 @@ def get_addresses(coordinates):
     i = 0
 
     for array in splited_coordinates:
-        print(str(array) + ' ' + 'COORD')
         data = {"batchItems": []}
         for coord in array:
             lat, lon = coord
