@@ -76,7 +76,7 @@ def record_video_with_playwright(coordinates, street, heading, screens_addresses
         context = browser.new_context(record_video_dir=VIDEO_RECORD_DIR)
         page = context.new_page()
         page.goto(url)
-        page.wait_for_timeout(1000)
+        page.wait_for_timeout(1500)
         current_address = [street]
         while any(street in addr for addr in current_address):
             page.keyboard.press('ArrowDown')

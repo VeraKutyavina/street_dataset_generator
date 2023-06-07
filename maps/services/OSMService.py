@@ -105,10 +105,7 @@ def get_street_data1(city_name, street_name, osm_item, final_data, points):
         final_data[street_name][tag_parts[0]] = []
 
         for point in points:
-
-            # data = ox.pois.pois_from_point((lat, lon), distance=radius, tags=tags)
             data = ox.geometries_from_point(point, tags, 500)
-            print(data, "DATAAA")
 
             coordinates = []
             data_dict = {}
