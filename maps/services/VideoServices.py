@@ -76,7 +76,7 @@ def record_video_with_playwright(coordinates, street, heading, screens_addresses
         context = browser.new_context(record_video_dir=VIDEO_RECORD_DIR)
         page = context.new_page()
         page.goto(url)
-        page.wait_for_timeout(1000)
+        page.wait_for_timeout(1500)
         current_address = [street]
         while any(street in addr for addr in current_address):
             page.keyboard.press('ArrowDown')
@@ -110,5 +110,7 @@ def create_map_video(address, screens_addresses_dict, points_new):
     street = get_street_name(coordinates[1], coordinates[0])
     points = get_random_points(address)
     heading = get_heading_param(points[0], points[1])
+
+    print(street)
 
     record_video_with_playwright(coordinates, street, heading, screens_addresses_dict, points_new)

@@ -49,7 +49,7 @@ def get_street_name(latitude, longitude):
     data = response.json()
 
     if 'addresses' in data and data['addresses']:
-        street_name = data['addresses'][0]['address']['streetName'].replace('Улица', '').strip()
+        street_name = data['addresses'][0]['address']['streetName'].replace('улица', '').replace('Улица', '').replace('Проспект', '').strip()
         return street_name
     else:
         return None
