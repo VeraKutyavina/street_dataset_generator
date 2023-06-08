@@ -95,3 +95,35 @@ def get_street_data(city_name, street_name, osm_item, final_data):
                     "name": data_dict[key],
                 }
                 final_data[street_name][tag_parts[0]].append(current_obj)
+
+
+def get_street_data1(city_name, street_name, osm_item, final_data, points):
+    print(points)
+    for key in osm_item.keys():
+        tag_parts = key.split('=')
+        tags = {tag_parts[1]: tag_parts[0]}
+        final_data[street_name][tag_parts[0]] = []
+
+        for point in points:
+            data = ox.geometries_from_point(point, tags, 500)
+
+            coordinates = []
+            data_dict = {}
+            for index, row in data.iterrows():
+                if type(row['geometry']) == shapely.geometry.point.Point:
+                    current_coordinates = (row['geometry'].y, row['geometry'].x)
+                    coordinates.append(current_coordinates)
+                    data_dict[current_coordinates] = row['name']
+
+            address_coordinates_dict = get_addresses(coordinates)
+
+            result = {}
+            for key in data_dict.keys():
+                if street_name.lower() in address_coordinates_dict[key].lower():
+                    result[data_dict[key]] = address_coordinates_dict[key]
+                    current_obj = {
+                        "address": address_coordinates_dict[key],
+                        "coordinates": key,
+                        "name": data_dict[key],
+                    }
+                    final_data[street_name][tag_parts[0]].append(current_obj)
